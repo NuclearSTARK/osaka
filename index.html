@@ -59,7 +59,7 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 .wxcard small{color:#3d5f57;display:block}
 
 /* timeline */
-.it{display:grid;grid-template-columns:54px 1fr;gap:8px;margin-bottom:10px}
+.it{display:grid;grid-template-columns:54px minmax(0,1fr);gap:8px;margin-bottom:10px}
 .tm{font-family:var(--sign);font-size:19px;padding-top:11px;text-align:right;color:var(--ink);line-height:1.1}
 .tm.txt{font-size:14px;font-family:var(--font);font-weight:700;color:var(--muted);padding-top:13px}
 .bd{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:11px 13px}
@@ -92,7 +92,7 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 .panel h2{margin:0 0 4px;font-size:17px}
 .panel p.note{margin:0 0 8px;color:var(--muted);font-size:13px}
 .row{display:flex;gap:8px}
-.field{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;font-size:16px}
+.field{min-width:0;width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;font-size:16px}
 .stack{display:flex;flex-direction:column;gap:8px}
 
 /* shopping */
@@ -106,16 +106,37 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 .empty{color:var(--muted);text-align:center;padding:18px 0;font-size:14px}
 
 /* rapit */
-.rec{display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;align-items:center;padding:11px 12px;border:1.5px solid var(--line);border-radius:14px;margin-top:8px}
-.rec .big{font-family:var(--sign);font-size:28px;grid-row:span 2;line-height:1}
-.rec .a{font-weight:700;font-size:14px}
-.rec .b{color:var(--muted);font-size:12.5px}
-.rec .t{grid-row:span 2;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--paper)}
+ .rec{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:13px 12px;border:1.5px solid var(--line);border-radius:14px;margin-top:8px}
+.rec .journey{min-width:0}
+.rec .big{font-family:var(--sign);font-size:30px;line-height:1.1;white-space:nowrap}
+.rec .a{font-weight:700;font-size:14px;margin-top:5px}
+.rec .b{grid-column:1/-1;color:var(--muted);font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.rec .t{align-self:start;font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;background:var(--paper);white-space:nowrap}
 .rec.best{border-color:var(--roof);background:var(--roof-soft)}
 .rec.best .t{background:var(--roof);color:#fff}
 .steps{margin:6px 0 0;padding-left:18px;font-size:13.5px}
 .steps li{margin:2px 0}
 
+/* nearby and notes */
+.nearby h2{font-size:16px}
+.nearby .loc-status{font-size:12px;color:var(--muted);margin:8px 0 0}
+.store-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}
+.store-links a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:7px 3px;border-radius:10px;text-decoration:none;font-size:12px;font-weight:700;background:var(--paper);text-align:center}
+.store-links .lawson{background:#e1eef8;color:#255d8a}
+.store-links .seven{background:#fff0de;color:#8c4400}
+.store-links .family{background:#ddeeeb;color:#256053}
+.pay{display:inline-block;background:var(--roof-soft);color:var(--roof);border-radius:8px;font-size:12px;font-weight:700;padding:3px 7px;margin-top:8px;text-decoration:none}
+.item-note{border-top:1px solid var(--line);padding-top:9px;margin-top:10px}
+.item-note label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}
+.item-note textarea{display:block;width:100%;min-height:64px;resize:vertical;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:9px;padding:8px;font-size:16px}
+.note-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}
+.note-status{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.note-status.error{color:#b42318}
+.note-save{flex:none;min-height:36px}
+.it.flight .item-note{border-color:#68758a}
+.it.flight .note-status{color:#ced8e5}
+.it.flight textarea{color:var(--ink)}
+@media(max-width:380px){main{padding:10px}.it{grid-template-columns:44px minmax(0,1fr);gap:6px}.tm{font-size:17px}.bd{padding:10px}.hd{flex-wrap:wrap}.rec .big{font-size:28px}.rec .a{font-size:13px}}
 /* fx */
 .fxbox{display:grid;grid-template-columns:1fr;gap:10px}
 .fxl{display:flex;align-items:center;gap:10px}
@@ -147,6 +168,17 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
   <section class="tab on" id="tab-plan">
     <div class="chips" id="chips"></div>
     <div class="wxcard" id="wxcard"><div class="ico">⏳</div><div><b>날씨 불러오는 중…</b><small>오사카 10/12–10/15 예보</small></div></div>
+    <div class="panel nearby">
+      <h2>📍 현재 위치 주변 편의점</h2>
+      <p class="note">위치를 확인한 뒤 브랜드를 누르면 구글맵에서 주변 매장을 볼 수 있어요.</p>
+      <button class="btn" id="locateStores" type="button">현재 위치 확인 / 갱신</button>
+      <p class="loc-status" id="locationStatus" role="status">아래 버튼은 구글맵의 현재 위치 기준으로 검색해요.</p>
+      <div class="store-links">
+        <a class="lawson" data-store="ローソン" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Lawson+near+me">로손</a>
+        <a class="seven" data-store="セブンイレブン" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=7-Eleven+near+me">7일레븐</a>
+        <a class="family" data-store="ファミリーマート" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=FamilyMart+near+me">훼밀리마트</a>
+      </div>
+    </div>
     <div id="list"></div>
   </section>
 
@@ -178,6 +210,7 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
   <section class="tab" id="tab-rapit">
     <div class="panel">
       <h2>10/12 간사이공항 → 난바</h2>
+      <p class="note">아래 시간은 이동 계획용 추천 시간대예요. 실제 출발편은 공식 시간표에서 확인하세요.</p>
       <p class="note">BX126 11:30 출발, 간사이 도착 약 13:00 가정 (입국·수하물 약 75~80분)</p>
       <div id="rIn"></div>
     </div>
@@ -254,6 +287,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 const shopCol = collection(db, 'trips', 'osaka-2026', 'shop');
+const notesCol = collection(db, 'trips', 'osaka-2026', 'notes');
 /* ===== 기본 데이터 ===== */
 const HOTEL = 'Hotel Resol Trinity Osaka';
 const $ = (s, r=document) => r.querySelector(s);
@@ -296,19 +330,52 @@ const DAYS = [
   { id:'d3d', t:'14:00', kind:'walk', title:'카페 · 브루클린 로스팅 컴퍼니 기타하마', sub:'기타하마 강변',
     url:'https://maps.app.goo.gl/YvbJHgyTHmdg9JR1A', ll:[34.6910465,135.5091563], go:'🚶 호텔에서 도보 약 10분' },
   { id:'d3e', t:'오후', kind:'free', title:'구로몬 시장 & 난바 & 도톤보리 구경·쇼핑', sub:'', q:'Kuromon Market Osaka', ll:[34.6623,135.5062], go:'🚇 기타하마→난바 지하철 약 15~20분' },
-  { id:'d3f', t:'19:00', kind:'res', title:'야키니쿠', sub:'지도 링크에서 위치 확인',
+  { id:'d3f', t:'19:00', kind:'res', title:'와규 야키니쿠 모우모우 미나미호리에점', sub:'南堀江1-20-19 · 니시무라 빌딩 1층',
     url:'https://maps.app.goo.gl/BDcWqobzxmTHgdV96', go:'🧭 위치 확인 후 길찾기 (지도 링크 열기)' }
  ]},
  { date:'2026-10-15', md:'10/15', dow:'목', items:[
   { id:'d4a', t:'08:00', kind:'free', title:'호텔 대욕장', sub:'', q:HOTEL },
   { id:'d4b', t:'09:00', kind:'free', title:'호텔 조식', sub:'', q:HOTEL },
   { id:'d4c', t:'11:00', kind:'free', title:'체크아웃 후 짐 맡기기', sub:'프런트에 짐 보관', q:HOTEL },
-  { id:'d4d', t:'11:30', kind:'res', title:'스시 · 토토기 요도야바시점', sub:'11:30~13:30',
+  { id:'d4d', t:'11:30', kind:'res', title:'스시 · 토토긴 요도야바시점', sub:'11:30~13:30',
     url:'https://maps.app.goo.gl/uKwKxpgEiweN6KTr5', ll:[34.6919946,135.5014447], go:'🚶 호텔에서 도보 약 5분' },
   { id:'d4e', t:'14:00', kind:'free', title:'짐 찾아서 난바로 출발', sub:'라피트 추천 시간은 라피트 탭', go:'🚇 미도스지선 요도야바시→난바 약 7분 + 난카이 난바역까지 도보 5~10분' },
   { id:'d4f', t:'18:55', kind:'flight', title:'✈ BX121 오사카(간사이) → 부산', sub:'공항 도착 목표 15:55~16:55' }
  ]}
 ];
+const CARD_SOURCES = {
+  d1c:'https://tabelog.com/osaka/A2701/A270101/27133229/',
+  d1d:'https://tabelog.com/osaka/A2701/A270101/27069537/',
+  d1f:'https://www.rikimarugroup.com/brands/isaribi/shops/umeda/outline/',
+  d2d:'https://tabelog.com/osaka/A2701/A270202/27001943/',
+  d2g:'https://kotetsudoutonbori.owst.jp/',
+  d3c:'https://tabelog.com/osaka/A2701/A270108/27141561/',
+  d3d:'https://tabelog.com/osaka/A2701/A270102/27128312/',
+  d3f:'https://yakinikuenninghorie.owst.jp/',
+  d4d:'https://tabelog.com/osaka/A2701/A270102/27154619/'
+};
+const notes = new Map();
+const drafts = new Map();
+const noteStates = new Map();
+let notesReady = false;
+let notesError = '';
+try{ Object.entries(JSON.parse(localStorage.getItem('osaka-note-drafts')||'{}')).forEach(([id,text])=>drafts.set(id,text)); }catch(e){}
+function keepDrafts(){ try{localStorage.setItem('osaka-note-drafts',JSON.stringify(Object.fromEntries(drafts)));}catch(e){} }
+function noteStatus(id){ return noteStates.get(id) || (drafts.has(id)?'미저장 메모':notesError?('연결 오류: '+notesError):notesReady?'공동 메모 · 저장하면 함께 보여요':'공동 메모 연결 중…'); }
+function updateNoteStatuses(){
+  $$('[data-note-status]').forEach(el=>{
+    el.textContent=noteStatus(el.dataset.noteStatus);
+    el.classList.toggle('error',el.textContent.includes('오류')||el.textContent.includes('실패'));
+  });
+}
+function startSharedNotes(){
+  onSnapshot(notesCol, snap=>{
+    notes.clear(); snap.docs.forEach(d=>notes.set(d.id,d.data().text||''));
+    notesReady=true; notesError='';
+    $$('[data-note]').forEach(el=>{if(!drafts.has(el.dataset.note)&&document.activeElement!==el)el.value=notes.get(el.dataset.note)||'';});
+    updateNoteStatuses();
+  }, e=>{notesReady=false;notesError=e.code||'firebase';updateNoteStatuses();});
+}
 const KIND_LABEL = { res:'예약완료', walk:'워크인', free:'', flight:'' };
 
 /* ===== 탭 ===== */
@@ -408,12 +475,18 @@ function itemHTML(it){
       <div class="hd"><h3>${esc(it.title)}</h3>${label?`<span class="tag">${label}</span>`:''}</div>
       ${it.sub?`<p class="sub">${esc(it.sub)}</p>`:''}
       ${it.go?`<p class="go">${esc(it.go)}</p>`:''}
+      ${CARD_SOURCES[it.id]?`<a class="pay" href="${CARD_SOURCES[it.id]}" target="_blank" rel="noopener" title="결제수단 안내 확인">💳 카드 가능</a>`:''}
       ${show?`<div class="acts">
         <a class="btn" target="_blank" rel="noopener" href="${esc(mapHref)}">📍 구글맵</a>
         ${dest?`<a class="btn" target="_blank" rel="noopener" href="${esc(dirUrl(dest))}">🧭 호텔에서 길찾기</a>`:''}
         ${it.kind==='res'?`<button class="btn" type="button" data-add="${it.id}">📷 예약 사진</button>`:''}
       </div>`:''}
       ${it.kind==='res'?`<div class="thumbs" data-thumbs="${it.id}"></div>`:''}
+      <div class="item-note">
+        <label for="note-${it.id}">📝 메모</label>
+        <textarea id="note-${it.id}" data-note="${it.id}" maxlength="2000" placeholder="주문할 메뉴, 준비물 등…">${esc(drafts.has(it.id)?drafts.get(it.id):notes.get(it.id)||'')}</textarea>
+        <div class="note-footer"><span class="note-status" data-note-status="${it.id}" role="status">${esc(noteStatus(it.id))}</span><button class="btn note-save" type="button" data-save-note="${it.id}">저장</button></div>
+      </div>
     </div>
   </article>`;
 }
@@ -424,6 +497,41 @@ function renderDay(){
 $('#chips').addEventListener('click', e => {
   const b = e.target.closest('.chip'); if(!b) return;
   sel = +b.dataset.i; renderChips(); renderDay(); window.scrollTo(0,0);
+});
+
+/* ===== 현재 위치 주변 편의점 ===== */
+$('#locateStores').addEventListener('click',()=>{
+  const status=$('#locationStatus'); const button=$('#locateStores');
+  if(!navigator.geolocation){status.textContent='위치 확인을 지원하지 않아요. 브랜드 버튼을 눌러 구글맵에서 찾아주세요.';return;}
+  button.disabled=true;status.textContent='현재 위치를 확인하는 중…';
+  navigator.geolocation.getCurrentPosition(p=>{
+    button.disabled=false;
+    const lat=p.coords.latitude.toFixed(6), lng=p.coords.longitude.toFixed(6);
+    $$('[data-store]').forEach(a=>{a.href='https://www.google.com/maps/search/'+encodeURIComponent(a.dataset.store)+'/@'+lat+','+lng+',16z';});
+    status.textContent='위치 확인 완료 · '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 기준. 이동하면 위치를 갱신하세요.';
+  },e=>{
+    button.disabled=false;
+    status.textContent=e.code===1?'위치 권한이 꺼져 있어요. 브랜드 버튼으로 구글맵에서 검색하거나 브라우저 위치 권한을 켜주세요.':'위치를 확인하지 못했어요. 다시 시도하거나 브랜드 버튼으로 구글맵에서 찾아주세요.';
+  },{enableHighAccuracy:true,timeout:12000,maximumAge:0});
+});
+/* ===== 일정 공동 메모 ===== */
+$('#list').addEventListener('input',e=>{
+  const el=e.target.closest('[data-note]');if(!el)return;
+  drafts.set(el.dataset.note,el.value);noteStates.delete(el.dataset.note);keepDrafts();updateNoteStatuses();
+});
+$('#list').addEventListener('click',async e=>{
+  const button=e.target.closest('[data-save-note]');if(!button)return;
+  const id=button.dataset.saveNote;
+  const text=drafts.has(id)?drafts.get(id):notes.get(id)||'';
+  if(!notesReady){toast('공동 메모 연결을 확인하세요');updateNoteStatuses();return;}
+  button.disabled=true;noteStates.set(id,'저장 중…');updateNoteStatuses();
+  try{
+    await setDoc(doc(notesCol,id),{text,updatedAt:serverTimestamp()});
+    notes.set(id,text);
+    if(drafts.get(id)===text){drafts.delete(id);keepDrafts();noteStates.set(id,'✓ 공동 메모 저장 완료');}
+    else{noteStates.delete(id);}
+  }catch(e){noteStates.set(id,'저장 실패: '+(e.code||'network'));}
+  finally{button.disabled=false;updateNoteStatuses();}
 });
 
 /* ===== 예약 사진 (IndexedDB, 이 기기에만 저장) ===== */
@@ -549,6 +657,7 @@ async function initSharedShop(){
   try{
     syncText('Firebase 로그인 중…');
     await signInAnonymously(auth);
+    startSharedNotes();
     if(localStorage.getItem('osaka-shop-migrated') !== '1'){
       let old=[]; try{ old=JSON.parse(localStorage.getItem('osaka-shop')||'[]'); }catch(e){}
       if(old.length){
@@ -564,7 +673,7 @@ async function initSharedShop(){
       });
       shopReady=true; syncText('● 실시간 공동연동'); renderShop();
     }, e => { shopReady=false; syncText('연결 오류: '+(e.code||'firestore'),true); toast('공동 목록을 불러오지 못했어요'); console.error(e); });
-  }catch(e){ shopReady=false; syncText('연결 오류: '+(e.code||'firebase'),true); toast('Firebase 연결을 확인하세요'); console.error(e); }
+  }catch(e){ shopReady=false; notesError=e.code||'firebase';updateNoteStatuses();syncText('연결 오류: '+(e.code||'firebase'),true); toast('Firebase 연결을 확인하세요'); console.error(e); }
 }
 
 /* ===== 라피트 ===== */
@@ -579,8 +688,8 @@ function renderRapit(){
   ];
   $('#rIn').innerHTML = inbound.map(r => {
     const nb = t2m(r.dep) + 38, hotel = nb + 25;
-    return `<div class="rec ${r.best?'best':''}"><div class="big">${r.dep}</div><div class="a">난바 도착 약 ${m2t(nb)}</div>
-      <div class="b">${r.why} · 호텔 약 ${m2t(hotel)}</div><div class="t">${r.tag}</div></div>`;
+    return `<div class="rec ${r.best?'best':''}"><div class="journey"><div class="big">${r.dep}</div><div class="a">→ 난바 도착 약 ${m2t(nb)}</div></div><div class="t">${r.tag}</div>
+      <div class="b">${r.why}<br>호텔 도착 약 ${m2t(hotel)}</div></div>`;
   }).join('');
   const out = [
     { dep:'15:00', tag:'여유', why:'마지막 쇼핑·식사 시간 확보' },
@@ -590,8 +699,8 @@ function renderRapit(){
   const flight = t2m('18:55');
   $('#rOut').innerHTML = out.map(r => {
     const ap = t2m(r.dep) + 37;
-    return `<div class="rec ${r.best?'best':''}"><div class="big">${r.dep}</div><div class="a">공항역 도착 약 ${m2t(ap)}</div>
-      <div class="b">${r.why} · 비행 ${dur(flight-ap)} 전 (터미널 이동 약 10분 별도)</div><div class="t">${r.tag}</div></div>`;
+    return `<div class="rec ${r.best?'best':''}"><div class="journey"><div class="big">${r.dep}</div><div class="a">→ 공항역 도착 약 ${m2t(ap)}</div></div><div class="t">${r.tag}</div>
+      <div class="b">${r.why}<br>비행 ${dur(flight-ap)} 전 · 터미널 이동 약 10분 별도</div></div>`;
   }).join('');
 }
 
