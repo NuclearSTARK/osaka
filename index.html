@@ -152,7 +152,7 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
   <section class="tab" id="tab-shop">
     <div class="panel">
       <h2>쇼핑리스트 <span id="shopCount" style="font-size:13px;color:var(--muted);font-weight:400"></span></h2>
-      <p class="note">살 것과 파는 곳(구글맵 링크 또는 장소명)을 적어두세요.</p>
+      <p class="note">살 것과 파는 곳(구글맵 링크 또는 장소명)을 적어두세요. <span id="shopSync">연결 중…</span></p>
       <div class="stack">
         <input class="field" id="shopName" placeholder="살 것 (예: 이치란 라멘 선물세트)" autocomplete="off">
         <div class="row">
@@ -235,7 +235,23 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 </div>
 <div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js';
+import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js';
+import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, writeBatch, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyAKibTngneW_hRwjMXo1bqoDj79hLuVqz8',
+  authDomain: 'osaka-2dc76.firebaseapp.com',
+  projectId: 'osaka-2dc76',
+  storageBucket: 'osaka-2dc76.firebasestorage.app',
+  messagingSenderId: '256112438992',
+  appId: '1:256112438992:web:3ece2b541648306ae78d5'
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+const shopCol = collection(db, 'trips', 'osaka-2026', 'shop');
 /* ===== 기본 데이터 ===== */
 const HOTEL = 'Hotel Resol Trinity Osaka';
 const $ = (s, r=document) => r.querySelector(s);
@@ -466,10 +482,10 @@ $('#vdel').onclick = async () => {
   await setPics(vState.id, pics); $('#vclose').onclick(); loadThumbs();
 };
 
-/* ===== 쇼핑리스트 ===== */
+/* ===== 공동 쇼핑리스트 (Firebase 실시간 연동) ===== */
 let shop = [];
-try{ shop = JSON.parse(localStorage.getItem('osaka-shop') || '[]'); }catch(e){}
-const saveShop = () => { try{ localStorage.setItem('osaka-shop', JSON.stringify(shop)); }catch(e){} };
+let shopReady = false;
+const syncText = (msg, bad=false) => { const el=$('#shopSync'); el.textContent=msg; el.style.color=bad?'#b42318':'var(--roof)'; };
 const placeHref = p => /^https?:\/\//i.test(p) ? p : mapsSearch(p);
 function renderShop(){
   const done = shop.filter(s => s.done).length;
@@ -481,10 +497,13 @@ function renderShop(){
       <button class="mini" data-del="${s.id}" type="button" aria-label="삭제">✕</button>
     </div>`).join('') : '<div class="empty">아직 담은 물건이 없어요</div>';
 }
-function addShop(){
+async function addShop(){
   const name = $('#shopName').value.trim(); if(!name){ $('#shopName').focus(); return; }
-  shop.unshift({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,5), name, place: $('#shopPlace').value.trim(), done:false });
-  $('#shopName').value = ''; $('#shopPlace').value = ''; saveShop(); renderShop(); $('#shopName').focus();
+  if(!shopReady){ toast('공동 목록 연결을 기다려 주세요'); return; }
+  const place = $('#shopPlace').value.trim();
+  $('#shopName').value = ''; $('#shopPlace').value = ''; $('#shopName').focus();
+  try{ await addDoc(shopCol, { name, place, done:false, createdAt:serverTimestamp(), updatedAt:serverTimestamp() }); }
+  catch(e){ toast('추가하지 못했어요. 인터넷 연결을 확인하세요'); }
 }
 $('#shopAdd').onclick = addShop;
 $('#shopName').addEventListener('keydown', e => { if(e.key==='Enter') addShop(); });
@@ -497,13 +516,17 @@ $('#shopFind').onclick = () => {
 };
 $('#shopList').addEventListener('click', e => {
   const del = e.target.closest('[data-del]');
-  if(del){ shop = shop.filter(s => s.id !== del.dataset.del); saveShop(); renderShop(); }
+  if(del) deleteDoc(doc(shopCol, del.dataset.del)).catch(() => toast('삭제하지 못했어요'));
 });
 $('#shopList').addEventListener('change', e => {
   const cb = e.target.closest('input[data-id]'); if(!cb) return;
-  const s = shop.find(x => x.id === cb.dataset.id); if(s){ s.done = cb.checked; saveShop(); renderShop(); }
+  updateDoc(doc(shopCol, cb.dataset.id), { done:cb.checked, updatedAt:serverTimestamp() }).catch(() => toast('변경하지 못했어요'));
 });
-$('#shopClear').onclick = () => { if(shop.some(s=>s.done) && confirm('완료한 항목을 지울까요?')){ shop = shop.filter(s => !s.done); saveShop(); renderShop(); } };
+$('#shopClear').onclick = async () => {
+  const done = shop.filter(s=>s.done); if(!done.length || !confirm('완료한 항목을 지울까요?')) return;
+  try{ const batch=writeBatch(db); done.forEach(s=>batch.delete(doc(shopCol,s.id))); await batch.commit(); }
+  catch(e){ toast('완료 항목을 지우지 못했어요'); }
+};
 $('#shopExport').onclick = async () => {
   const code = 'OSAKA-SHOP:' + btoa(unescape(encodeURIComponent(JSON.stringify(shop))));
   try{ await navigator.clipboard.writeText(code); toast('복사했어요. 카톡 등으로 보내세요'); }
@@ -513,11 +536,34 @@ $('#shopImport').onclick = () => {
   const code = prompt('받은 코드를 붙여넣으세요'); if(!code) return;
   try{
     const data = JSON.parse(decodeURIComponent(escape(atob(code.trim().replace(/^OSAKA-SHOP:/,'')))));
-    const have = new Set(shop.map(s => s.id)); let n = 0;
-    data.forEach(s => { if(s && s.id && !have.has(s.id)){ shop.push({ id:s.id, name:String(s.name||''), place:String(s.place||''), done:!!s.done }); n++; } });
-    saveShop(); renderShop(); toast(n + '개 가져왔어요');
+    const have = new Set(shop.map(s => s.id)); const valid = data.filter(s => s && s.id && s.name && !have.has(s.id));
+    const batch=writeBatch(db);
+    valid.forEach(s => batch.set(doc(shopCol,String(s.id)), { name:String(s.name), place:String(s.place||''), done:!!s.done, createdAt:serverTimestamp(), updatedAt:serverTimestamp() }));
+    batch.commit().then(()=>toast(valid.length+'개 가져왔어요')).catch(()=>toast('목록을 가져오지 못했어요'));
   }catch(e){ toast('코드를 읽지 못했어요'); }
 };
+
+async function initSharedShop(){
+  try{
+    syncText('Firebase 로그인 중…');
+    await signInAnonymously(auth);
+    if(localStorage.getItem('osaka-shop-migrated') !== '1'){
+      let old=[]; try{ old=JSON.parse(localStorage.getItem('osaka-shop')||'[]'); }catch(e){}
+      if(old.length){
+        const batch=writeBatch(db);
+        old.forEach(s => s && s.id && s.name && batch.set(doc(shopCol,String(s.id)), { name:String(s.name), place:String(s.place||''), done:!!s.done, createdAt:serverTimestamp(), updatedAt:serverTimestamp() }));
+        await batch.commit();
+      }
+      localStorage.setItem('osaka-shop-migrated','1');
+    }
+    onSnapshot(shopCol, snap => {
+      shop = snap.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b) => {
+        const at=a.createdAt?.seconds||0, bt=b.createdAt?.seconds||0; return bt-at;
+      });
+      shopReady=true; syncText('● 실시간 공동연동'); renderShop();
+    }, () => { shopReady=false; syncText('연결 오류',true); toast('공동 목록을 불러오지 못했어요'); });
+  }catch(e){ shopReady=false; syncText('연결 오류',true); toast('Firebase 연결을 확인하세요'); }
+}
 
 /* ===== 라피트 ===== */
 const t2m = s => { const [h,m] = s.split(':').map(Number); return h*60+m; };
@@ -584,6 +630,7 @@ $('#quick').addEventListener('click', e => { const b = e.target.closest('[data-v
 
 /* ===== 시작 ===== */
 renderChips(); renderDay(); renderShop(); renderRapit();
+initSharedShop();
 loadWeather(); loadRate();
 </script>
 </body>
