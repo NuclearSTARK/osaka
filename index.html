@@ -241,12 +241,12 @@ import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/1
 import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, writeBatch, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAKibTngneW_hRwjMXo1bqoDj79hLuVqz8',
+  apiKey: 'AIzaSyAKibTngneW_hRwjMXo1bqoDj79hluVqz8',
   authDomain: 'osaka-2dc76.firebaseapp.com',
   projectId: 'osaka-2dc76',
   storageBucket: 'osaka-2dc76.firebasestorage.app',
   messagingSenderId: '256112438992',
-  appId: '1:256112438992:web:3ece2b541648306ae78d5'
+  appId: '1:256112438992:web:3ece2bf541648306ae78d5'
 };
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
@@ -561,8 +561,8 @@ async function initSharedShop(){
         const at=a.createdAt?.seconds||0, bt=b.createdAt?.seconds||0; return bt-at;
       });
       shopReady=true; syncText('● 실시간 공동연동'); renderShop();
-    }, () => { shopReady=false; syncText('연결 오류',true); toast('공동 목록을 불러오지 못했어요'); });
-  }catch(e){ shopReady=false; syncText('연결 오류',true); toast('Firebase 연결을 확인하세요'); }
+    }, e => { shopReady=false; syncText('연결 오류: '+(e.code||'firestore'),true); toast('공동 목록을 불러오지 못했어요'); console.error(e); });
+  }catch(e){ shopReady=false; syncText('연결 오류: '+(e.code||'firebase'),true); toast('Firebase 연결을 확인하세요'); console.error(e); }
 }
 
 /* ===== 라피트 ===== */
