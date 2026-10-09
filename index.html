@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#162033">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="오사카">
+<title>오사카 10.12–10.15</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#162033; --paper:#EDF1F5; --card:#fff; --muted:#68758a; --line:#d8e0e9;
+  --roof:#2F6F62; --roof-soft:#DDEEE9;
+  --pink-bg:#FFD9E6; --pink-line:#EF7FA6; --pink-ink:#98194F;
+  --sky:#E1EEF8; --sky-ink:#255d8a;
+  --font:'Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --sign:'Do Hyeon','Noto Sans KR',system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:var(--font);background:var(--paper);color:var(--ink);font-size:15px;line-height:1.5;
+  padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+a{color:inherit}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--roof);outline-offset:2px}
+
+.top{position:sticky;top:0;z-index:20;background:var(--ink);color:#fff;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 16px 12px;display:flex;align-items:flex-end;justify-content:space-between}
+.top h1{margin:0;font-family:var(--sign);font-weight:400;font-size:28px;letter-spacing:.02em;line-height:1}
+.top .range{display:block;font-size:12px;opacity:.75;margin-top:4px}
+.dday{font-family:var(--sign);font-size:20px;background:var(--pink-line);color:#fff;border-radius:999px;padding:3px 14px 4px}
+
+main{max-width:560px;margin:0 auto;padding:12px 14px}
+.tab{display:none}.tab.on{display:block}
+
+/* tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar button{border:0;background:none;padding:9px 0 8px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+.tabbar button span{font-size:21px;line-height:1}
+.tabbar button.on{color:var(--roof);font-weight:700}
+
+/* day chips */
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:8px 2px 7px;text-align:center;line-height:1.25}
+.chip b{display:block;font-family:var(--sign);font-weight:400;font-size:19px}
+.chip small{display:block;color:var(--muted);font-size:12px}
+.chip .wx{display:block;font-style:normal;font-size:11.5px;margin-top:2px;min-height:16px}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip.on small{color:#b9c4d4}
+
+.wxcard{background:var(--roof-soft);border-radius:14px;padding:10px 14px;margin-bottom:12px;font-size:14px;display:flex;gap:10px;align-items:center}
+.wxcard .ico{font-size:30px;line-height:1}
+.wxcard small{color:#3d5f57;display:block}
+
+/* timeline */
+.it{display:grid;grid-template-columns:54px 1fr;gap:8px;margin-bottom:10px}
+.tm{font-family:var(--sign);font-size:19px;padding-top:11px;text-align:right;color:var(--ink);line-height:1.1}
+.tm.txt{font-size:14px;font-family:var(--font);font-weight:700;color:var(--muted);padding-top:13px}
+.bd{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:11px 13px}
+.hd{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.hd h3{margin:0;font-size:16px;line-height:1.35}
+.tag{flex:none;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.sub{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+.go{margin:6px 0 0;font-size:13px;background:var(--paper);border-radius:8px;padding:5px 9px}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.btn{display:inline-flex;align-items:center;gap:4px;border:1.5px solid var(--line);background:#fff;border-radius:999px;
+  padding:6px 12px;font-size:13px;font-weight:500;text-decoration:none;cursor:pointer}
+.btn.pri{background:var(--roof);border-color:var(--roof);color:#fff}
+
+.it.res .bd{background:var(--pink-bg);border-color:var(--pink-line)}
+.it.res .tag{background:var(--pink-line);color:#fff}
+.it.res .go{background:rgba(255,255,255,.65)}
+.it.res .sub{color:#8a4560}
+.it.res .btn{border-color:var(--pink-line);background:rgba(255,255,255,.8);color:var(--pink-ink)}
+.it.walk .tag{background:var(--sky);color:var(--sky-ink)}
+.it.free .bd{border-style:dashed}
+.it.flight .bd{background:var(--ink);border-color:var(--ink);color:#fff}
+.it.flight .sub{color:#b9c4d4}
+.it.flight .go{background:rgba(255,255,255,.12)}
+
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.thumbs img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--pink-line);cursor:pointer}
+
+/* panels */
+.panel{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.panel h2{margin:0 0 4px;font-size:17px}
+.panel p.note{margin:0 0 8px;color:var(--muted);font-size:13px}
+.row{display:flex;gap:8px}
+.field{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;font-size:16px}
+.stack{display:flex;flex-direction:column;gap:8px}
+
+/* shopping */
+.si{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}
+.si:last-child{border-bottom:0}
+.si label{flex:1;display:flex;gap:10px;align-items:center;min-width:0}
+.si input[type=checkbox]{width:22px;height:22px;accent-color:var(--roof);flex:none}
+.si .nm{overflow-wrap:anywhere}
+.si.done .nm{text-decoration:line-through;color:var(--muted)}
+.si .mini{border:0;background:var(--paper);border-radius:10px;width:38px;height:38px;font-size:17px;text-decoration:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.empty{color:var(--muted);text-align:center;padding:18px 0;font-size:14px}
+
+/* rapit */
+.rec{display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;align-items:center;padding:11px 12px;border:1.5px solid var(--line);border-radius:14px;margin-top:8px}
+.rec .big{font-family:var(--sign);font-size:28px;grid-row:span 2;line-height:1}
+.rec .a{font-weight:700;font-size:14px}
+.rec .b{color:var(--muted);font-size:12.5px}
+.rec .t{grid-row:span 2;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--paper)}
+.rec.best{border-color:var(--roof);background:var(--roof-soft)}
+.rec.best .t{background:var(--roof);color:#fff}
+.steps{margin:6px 0 0;padding-left:18px;font-size:13.5px}
+.steps li{margin:2px 0}
+
+/* fx */
+.fxbox{display:grid;grid-template-columns:1fr;gap:10px}
+.fxl{display:flex;align-items:center;gap:10px}
+.fxl span{font-family:var(--sign);font-size:20px;width:34px;text-align:center}
+.fxl input{font-size:22px;font-weight:700}
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+
+/* viewer */
+#viewer{position:fixed;inset:0;background:rgba(10,14,22,.94);z-index:60;display:none;flex-direction:column;
+  padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+#viewer.on{display:flex}
+#viewer img{flex:1;min-height:0;object-fit:contain;width:100%}
+#viewer .vb{display:flex;gap:10px;justify-content:center;padding:12px}
+.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;
+  padding:8px 16px;border-radius:999px;font-size:13px;z-index:70;display:none}
+.toast.on{display:block}
+@media (prefers-reduced-motion:no-preference){ .chip,.btn{transition:background .15s,color .15s} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div><h1>오사카</h1><span class="range">10.12 월 – 10.15 목 · Hotel Resol Trinity</span></div>
+  <div class="dday" id="dday"></div>
+</header>
+
+<main>
+  <!-- 일정 -->
+  <section class="tab on" id="tab-plan">
+    <div class="chips" id="chips"></div>
+    <div class="wxcard" id="wxcard"><div class="ico">⏳</div><div><b>날씨 불러오는 중…</b><small>오사카 10/12–10/15 예보</small></div></div>
+    <div id="list"></div>
+  </section>
+
+  <!-- 쇼핑 -->
+  <section class="tab" id="tab-shop">
+    <div class="panel">
+      <h2>쇼핑리스트 <span id="shopCount" style="font-size:13px;color:var(--muted);font-weight:400"></span></h2>
+      <p class="note">살 것과 파는 곳(구글맵 링크 또는 장소명)을 적어두세요.</p>
+      <div class="stack">
+        <input class="field" id="shopName" placeholder="살 것 (예: 이치란 라멘 선물세트)" autocomplete="off">
+        <div class="row">
+          <input class="field" id="shopPlace" placeholder="구글맵 링크 또는 장소명 (선택)" autocomplete="off">
+          <button class="btn" id="shopFind" type="button" title="구글맵에서 찾기">🔎</button>
+        </div>
+        <button class="btn pri" id="shopAdd" type="button" style="justify-content:center;padding:11px">추가</button>
+      </div>
+    </div>
+    <div class="panel" style="padding:4px 14px">
+      <div id="shopList"></div>
+    </div>
+    <div class="row" style="flex-wrap:wrap">
+      <button class="btn" id="shopClear" type="button">완료 항목 지우기</button>
+      <button class="btn" id="shopExport" type="button">목록 복사</button>
+      <button class="btn" id="shopImport" type="button">목록 가져오기</button>
+    </div>
+  </section>
+
+  <!-- 라피트 -->
+  <section class="tab" id="tab-rapit">
+    <div class="panel">
+      <h2>10/12 간사이공항 → 난바</h2>
+      <p class="note">BX126 11:30 출발, 간사이 도착 약 13:00 가정 (입국·수하물 약 75~80분)</p>
+      <div id="rIn"></div>
+    </div>
+    <div class="panel">
+      <h2>10/15 난바 → 간사이공항</h2>
+      <p class="note">BX121 18:55 출발 · 공항에는 2~3시간 전 도착 목표 (15:55~16:55)</p>
+      <div id="rOut"></div>
+    </div>
+    <div class="panel">
+      <h2>난바 ↔ 호텔</h2>
+      <ol class="steps">
+        <li>난바역 미도스지선 → 요도야바시역 (3정거장, 약 7분)</li>
+        <li>요도야바시역 8번·11번 출구에서 도보 4분</li>
+        <li>난카이 난바역(라피트)은 미도스지선 난바역에서 도보 약 5~10분</li>
+      </ol>
+      <p class="note" style="margin-top:8px">라피트 출발 분(分)은 요일·시즌으로 달라질 수 있어 위 시간은 추천 시간대입니다. 예매 전 공식 시간표로 가까운 편을 고르세요. QR티켓은 출발 5분 전까지 변경 가능합니다.</p>
+      <a class="btn pri" target="_blank" rel="noopener" href="https://www.nankai.co.jp/kr_railway/access-timetable">난카이 공식 시간표</a>
+    </div>
+  </section>
+
+  <!-- 환율 -->
+  <section class="tab" id="tab-fx">
+    <div class="panel">
+      <h2>환율 계산기</h2>
+      <p class="note" id="fxNote">환율을 불러오는 중…</p>
+      <div class="fxbox">
+        <div class="fxl"><span>¥</span><input class="field" id="jpy" inputmode="decimal" placeholder="엔"></div>
+        <div class="fxl"><span>₩</span><input class="field" id="krw" inputmode="decimal" placeholder="원"></div>
+        <div class="quick" id="quick"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>기준 환율</h2>
+      <p class="note">100엔당 원화. 환전소·카드 환율에 맞춰 직접 고칠 수 있어요.</p>
+      <div class="row">
+        <input class="field" id="rate" inputmode="decimal" placeholder="원 / 100엔">
+        <button class="btn" id="rateAuto" type="button">자동</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar" aria-label="메뉴">
+  <button class="on" data-tab="plan" type="button"><span>🗓️</span>일정</button>
+  <button data-tab="shop" type="button"><span>🛍️</span>쇼핑</button>
+  <button data-tab="rapit" type="button"><span>🚄</span>라피트</button>
+  <button data-tab="fx" type="button"><span>💴</span>환율</button>
+</nav>
+
+<input type="file" id="fileIn" accept="image/*" multiple hidden>
+<div id="viewer" role="dialog" aria-label="예약 사진">
+  <img id="vimg" alt="예약 사진">
+  <div class="vb">
+    <button class="btn" id="vdel" type="button">삭제</button>
+    <button class="btn pri" id="vclose" type="button">닫기</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== 기본 데이터 ===== */
+const HOTEL = 'Hotel Resol Trinity Osaka';
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mapsSearch = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+const dirUrl = dest => 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(HOTEL) +
+  '&destination=' + encodeURIComponent(dest) + '&travelmode=transit';
+const toast = (m) => { const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toast.h); toast.h=setTimeout(()=>t.classList.remove('on'),2200); };
+
+const DAYS = [
+ { date:'2026-10-12', md:'10/12', dow:'월', items:[
+  { id:'d1a', t:'11:30', kind:'flight', title:'✈ BX126 부산 → 간사이공항', sub:'도착 후 라피트로 난바 → 지하철로 호텔 (라피트 탭 참고)' },
+  { id:'d1b', t:'15:00', kind:'free', title:'호텔 체크인', sub:'요도야바시역 도보 4분 · 우메다까지 지하철 3분', q:HOTEL },
+  { id:'d1c', t:'점심', kind:'walk', title:'몬자야끼 · 모헤지 우메다 루쿠아점', sub:'늦은 점심',
+    url:'https://maps.app.goo.gl/Fowsods9ksrQzhRx9', ll:[34.7032554,135.495578], go:'🚇 미도스지선 요도야바시→우메다 + 도보 · 약 15분' },
+  { id:'d1d', t:'간식', kind:'walk', title:'잇신도 한큐 우메다점 · 딸기모찌', sub:'',
+    url:'https://maps.app.goo.gl/1hMTDt7z4Nbwakxm9', ll:[34.7031237,135.4985618], go:'🚇 약 15분 (우메다 안에서는 도보 이동)' },
+  { id:'d1e', t:'오후', kind:'free', title:'우메다 백화점 쇼핑', sub:'몽벨, 유니클로 등', q:'Hankyu Umeda Main Store', ll:[34.7040,135.4985], go:'🚇 약 15분' },
+  { id:'d1f', t:'21:00', kind:'res', title:'로바타야키 · 리키마루 이사리비', sub:'우메다',
+    url:'https://maps.app.goo.gl/Cv6iNZ3b9qNg61Dp8', ll:[34.7064892,135.4977256], go:'🚇 미도스지선 우메다→요도야바시 3분 + 도보 4분 · 호텔서 약 15분' }
+ ]},
+ { date:'2026-10-13', md:'10/13', dow:'화', items:[
+  { id:'d2a', t:'07:00', kind:'free', title:'오사카성 러닝', sub:'', q:'Osaka Castle', ll:[34.6873,135.5262], go:'🏃 호텔에서 러닝 약 25~30분(약 3km) · 🚇 지하철+도보 약 25분' },
+  { id:'d2b', t:'09:30', kind:'free', title:'호텔 조식', sub:'조식 운영이 7:00~9:30으로 안내된 곳이 있어요. 프런트에서 마감 시간 확인 권장', q:HOTEL },
+  { id:'d2c', t:'12:00', kind:'free', title:'난바로 이동', sub:'', go:'🚇 미도스지선 요도야바시→난바 약 7분 + 도보 · 약 15분' },
+  { id:'d2d', t:'13:00', kind:'res', title:'우오신', sub:'난바',
+    url:'https://maps.app.goo.gl/BkKKyuscboxdbJ5BA', ll:[34.6680994,135.503607], go:'🚇 약 15~20분' },
+  { id:'d2e', t:'오후', kind:'free', title:'난바 & 도톤보리 구경·쇼핑', sub:'', q:'Dotonbori Osaka', ll:[34.6687,135.5013], go:'🚇 약 15분' },
+  { id:'d2f', t:'17:00', kind:'walk', title:'선셋 · 덴시바 공원 간식', sub:'공원에서 간식 까기',
+    url:'https://maps.app.goo.gl/9z5aqo7Lo9tGoPcN9', ll:[34.6485381,135.5110453], go:'🚇 난바→덴노지 미도스지선 약 10분 · 호텔에서는 약 25분' },
+  { id:'d2g', t:'20:00', kind:'res', title:'쿠시카츠 · 명물 코테츠 도톤보리점', sub:'',
+    url:'https://maps.app.goo.gl/bRcobut2ezu2HoDc6', ll:[34.6688534,135.5033832], go:'🚇 덴노지→난바 약 10분 + 도보 5분' }
+ ]},
+ { date:'2026-10-14', md:'10/14', dow:'수', items:[
+  { id:'d3a', t:'07:00', kind:'res', title:'크로스핏 기타하마', sub:'기타하마 일대', q:'CrossFit Kitahama Osaka', go:'🚶 호텔에서 도보 약 10분 (정확한 박스 위치는 지도에서 확인)' },
+  { id:'d3b', t:'09:00', kind:'free', title:'호텔 조식', sub:'', q:HOTEL },
+  { id:'d3c', t:'12:00', kind:'res', title:'스시 후쿠시마 (Sushi Fukushima)', sub:'',
+    url:'https://maps.app.goo.gl/s1RRwps3GLdrjyqFA', ll:[34.6943569,135.4877902], go:'🚇 지하철+도보 약 25분' },
+  { id:'d3d', t:'14:00', kind:'walk', title:'카페 · 브루클린 로스팅 컴퍼니 기타하마', sub:'기타하마 강변',
+    url:'https://maps.app.goo.gl/YvbJHgyTHmdg9JR1A', ll:[34.6910465,135.5091563], go:'🚶 호텔에서 도보 약 10분' },
+  { id:'d3e', t:'오후', kind:'free', title:'구로몬 시장 & 난바 & 도톤보리 구경·쇼핑', sub:'', q:'Kuromon Market Osaka', ll:[34.6623,135.5062], go:'🚇 기타하마→난바 지하철 약 15~20분' },
+  { id:'d3f', t:'19:00', kind:'res', title:'야키니쿠', sub:'지도 링크에서 위치 확인',
+    url:'https://maps.app.goo.gl/BDcWqobzxmTHgdV96', go:'🧭 위치 확인 후 길찾기 (지도 링크 열기)' }
+ ]},
+ { date:'2026-10-15', md:'10/15', dow:'목', items:[
+  { id:'d4a', t:'08:00', kind:'free', title:'호텔 대욕장', sub:'', q:HOTEL },
+  { id:'d4b', t:'09:00', kind:'free', title:'호텔 조식', sub:'', q:HOTEL },
+  { id:'d4c', t:'11:00', kind:'free', title:'체크아웃 후 짐 맡기기', sub:'프런트에 짐 보관', q:HOTEL },
+  { id:'d4d', t:'11:30', kind:'res', title:'스시 · 토토기 요도야바시점', sub:'11:30~13:30',
+    url:'https://maps.app.goo.gl/uKwKxpgEiweN6KTr5', ll:[34.6919946,135.5014447], go:'🚶 호텔에서 도보 약 5분' },
+  { id:'d4e', t:'14:00', kind:'free', title:'짐 찾아서 난바로 출발', sub:'라피트 추천 시간은 라피트 탭', go:'🚇 미도스지선 요도야바시→난바 약 7분 + 난카이 난바역까지 도보 5~10분' },
+  { id:'d4f', t:'18:55', kind:'flight', title:'✈ BX121 오사카(간사이) → 부산', sub:'공항 도착 목표 15:55~16:55' }
+ ]}
+];
+const KIND_LABEL = { res:'예약완료', walk:'워크인', free:'', flight:'' };
+
+/* ===== 탭 ===== */
+$$('.tabbar button').forEach(b => b.addEventListener('click', () => {
+  $$('.tabbar button').forEach(x => x.classList.toggle('on', x === b));
+  $$('.tab').forEach(t => t.classList.toggle('on', t.id === 'tab-' + b.dataset.tab));
+  window.scrollTo(0, 0);
+}));
+
+/* ===== D-day ===== */
+(function dday(){
+  const d = new Date(); const today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const start = new Date(2026,9,12), end = new Date(2026,9,15);
+  const diff = Math.round((start - today) / 86400000);
+  $('#dday').textContent = diff > 0 ? 'D-' + diff : (today <= end ? (Math.round((today-start)/86400000)+1) + '일차' : '여행 끝');
+})();
+
+/* ===== 날씨 (Open-Meteo, 키 불필요) ===== */
+const WX = {};
+let wxError = '';
+let wxUpdatedAt = '';
+function wxInfo(c){
+  if(c===0) return ['☀️','맑음'];
+  if(c===1) return ['🌤️','대체로 맑음'];
+  if(c===2) return ['⛅','구름 조금'];
+  if(c===3) return ['☁️','흐림'];
+  if(c===45||c===48) return ['🌫️','안개'];
+  if(c>=51&&c<=57) return ['🌦️','이슬비'];
+  if(c>=61&&c<=67) return ['🌧️','비'];
+  if(c>=71&&c<=77) return ['❄️','눈'];
+  if(c>=80&&c<=82) return ['🌦️','소나기'];
+  if(c>=95) return ['⛈️','뇌우'];
+  return ['🌡️','—'];
+}
+async function loadWeather(){
+  const url = 'https://api.open-meteo.com/v1/forecast?latitude=34.69&longitude=135.50' +
+    '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max' +
+    '&timezone=Asia%2FTokyo&start_date=2026-10-12&end_date=2026-10-15';
+  try{
+    wxError = '';
+    const r = await fetch(url, { cache:'no-store' });
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    if(!j.daily || !Array.isArray(j.daily.time)) throw new Error('예보 데이터 형식 오류');
+    j.daily.time.forEach((d,i) => WX[d] = { code:j.daily.weather_code[i], max:j.daily.temperature_2m_max[i], min:j.daily.temperature_2m_min[i], pop:j.daily.precipitation_probability_max[i] });
+    wxUpdatedAt = new Date().toLocaleString('ko-KR', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    try{ localStorage.setItem('osaka-wx', JSON.stringify({ data:WX, at:wxUpdatedAt })); }catch(e){}
+  }catch(e){
+    wxError = e && e.message ? e.message : '네트워크 오류';
+    try{
+      const cached = JSON.parse(localStorage.getItem('osaka-wx')||'null');
+      if(cached && cached.data){ Object.assign(WX, cached.data); wxUpdatedAt = cached.at || '이전 저장'; }
+    }catch(_){}
+  }
+  renderChips(); renderWxCard();
+}
+
+/* ===== 일정 ===== */
+let sel = 0;
+(function pickDay(){
+  const d = new Date(); const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const i = DAYS.findIndex(x => x.date === iso); if(i >= 0) sel = i;
+})();
+function renderChips(){
+  $('#chips').innerHTML = DAYS.map((d,i) => {
+    const w = WX[d.date]; const x = w ? wxInfo(w.code)[0] + ' ' + Math.round(w.max) + '°' : '·';
+    return `<button class="chip ${i===sel?'on':''}" data-i="${i}" type="button"><b>${d.md}</b><small>${d.dow}</small><i class="wx">${x}</i></button>`;
+  }).join('');
+}
+function renderWxCard(){
+  const w = WX[DAYS[sel].date]; const el = $('#wxcard');
+  if(!w){
+    el.hidden = false;
+    el.innerHTML = `<div class="ico">⚠️</div><div><b>날씨를 불러오지 못했어요</b><small>${esc(wxError || '잠시 후 다시 시도해 주세요')}</small><button class="btn" id="wxRetry" type="button" style="margin-top:6px">다시 시도</button></div>`;
+    return;
+  }
+  const [ico, txt] = wxInfo(w.code);
+  el.hidden = false;
+  el.innerHTML = `<div class="ico">${ico}</div><div><b>${txt}</b> · ${Math.round(w.min)}° / ${Math.round(w.max)}°<small>강수확률 ${w.pop ?? '–'}% · ${esc(wxUpdatedAt || '예보')} 기준${wxError?' (저장된 예보)':''}</small></div>`;
+}
+$('#wxcard').addEventListener('click', e => {
+  if(e.target.closest('#wxRetry')){
+    e.target.closest('#wxRetry').disabled = true;
+    e.target.closest('#wxRetry').textContent = '불러오는 중…';
+    loadWeather();
+  }
+});
+function itemHTML(it){
+  const mapHref = it.url || (it.ll ? mapsSearch(it.ll.join(',')) : mapsSearch(it.q || it.title));
+  const dest = it.ll ? it.ll.join(',') : null;
+  const isTime = /^\d/.test(it.t);
+  const label = KIND_LABEL[it.kind];
+  const show = it.kind !== 'flight';
+  return `<article class="it ${it.kind}" id="${it.id}">
+    <div class="tm ${isTime?'':'txt'}">${esc(it.t)}</div>
+    <div class="bd">
+      <div class="hd"><h3>${esc(it.title)}</h3>${label?`<span class="tag">${label}</span>`:''}</div>
+      ${it.sub?`<p class="sub">${esc(it.sub)}</p>`:''}
+      ${it.go?`<p class="go">${esc(it.go)}</p>`:''}
+      ${show?`<div class="acts">
+        <a class="btn" target="_blank" rel="noopener" href="${esc(mapHref)}">📍 구글맵</a>
+        ${dest?`<a class="btn" target="_blank" rel="noopener" href="${esc(dirUrl(dest))}">🧭 호텔에서 길찾기</a>`:''}
+        ${it.kind==='res'?`<button class="btn" type="button" data-add="${it.id}">📷 예약 사진</button>`:''}
+      </div>`:''}
+      ${it.kind==='res'?`<div class="thumbs" data-thumbs="${it.id}"></div>`:''}
+    </div>
+  </article>`;
+}
+function renderDay(){
+  $('#list').innerHTML = DAYS[sel].items.map(itemHTML).join('');
+  renderWxCard(); loadThumbs();
+}
+$('#chips').addEventListener('click', e => {
+  const b = e.target.closest('.chip'); if(!b) return;
+  sel = +b.dataset.i; renderChips(); renderDay(); window.scrollTo(0,0);
+});
+
+/* ===== 예약 사진 (IndexedDB, 이 기기에만 저장) ===== */
+const dbp = new Promise((res, rej) => {
+  if(!window.indexedDB){ rej(); return; }
+  const r = indexedDB.open('osaka-trip', 1);
+  r.onupgradeneeded = () => r.result.createObjectStore('photos');
+  r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+});
+const idb = (mode, fn) => dbp.then(db => new Promise((res, rej) => {
+  const tx = db.transaction('photos', mode); const rq = fn(tx.objectStore('photos'));
+  tx.oncomplete = () => res(rq && rq.result); tx.onerror = () => rej(tx.error);
+}));
+const getPics = id => idb('readonly', s => s.get(id)).then(v => v || []).catch(() => []);
+const setPics = (id, arr) => idb('readwrite', s => arr.length ? s.put(arr, id) : s.delete(id));
+async function shrink(file){
+  try{
+    const bmp = await createImageBitmap(file); const sc = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width*sc); c.height = Math.round(bmp.height*sc);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    return await new Promise(r => c.toBlob(b => r(b || file), 'image/jpeg', .85));
+  }catch(e){ return file; }
+}
+const urls = {};
+async function loadThumbs(){
+  for(const box of $$('[data-thumbs]')){
+    const id = box.dataset.thumbs; const pics = await getPics(id);
+    (urls[id] || []).forEach(URL.revokeObjectURL);
+    urls[id] = pics.map(b => URL.createObjectURL(b));
+    box.innerHTML = urls[id].map((u,i) => `<img src="${u}" alt="예약 사진 ${i+1}" data-id="${id}" data-i="${i}">`).join('');
+  }
+}
+let addFor = null;
+$('#list').addEventListener('click', e => {
+  const add = e.target.closest('[data-add]');
+  if(add){ addFor = add.dataset.add; $('#fileIn').click(); return; }
+  const img = e.target.closest('.thumbs img');
+  if(img) openViewer(img.dataset.id, +img.dataset.i);
+});
+$('#fileIn').addEventListener('change', async e => {
+  const files = [...e.target.files]; e.target.value = '';
+  if(!files.length || !addFor) return;
+  try{
+    const pics = await getPics(addFor);
+    for(const f of files) pics.push(await shrink(f));
+    await setPics(addFor, pics); await loadThumbs(); toast('사진을 추가했어요');
+  }catch(err){ toast('사진을 저장하지 못했어요'); }
+});
+let vState = null;
+function openViewer(id, i){
+  vState = { id, i }; $('#vimg').src = urls[id][i]; $('#viewer').classList.add('on');
+}
+$('#vclose').onclick = () => { $('#viewer').classList.remove('on'); vState = null; };
+$('#vimg').onclick = $('#vclose').onclick;
+$('#vdel').onclick = async () => {
+  if(!vState || !confirm('이 사진을 삭제할까요?')) return;
+  const pics = await getPics(vState.id); pics.splice(vState.i, 1);
+  await setPics(vState.id, pics); $('#vclose').onclick(); loadThumbs();
+};
+
+/* ===== 쇼핑리스트 ===== */
+let shop = [];
+try{ shop = JSON.parse(localStorage.getItem('osaka-shop') || '[]'); }catch(e){}
+const saveShop = () => { try{ localStorage.setItem('osaka-shop', JSON.stringify(shop)); }catch(e){} };
+const placeHref = p => /^https?:\/\//i.test(p) ? p : mapsSearch(p);
+function renderShop(){
+  const done = shop.filter(s => s.done).length;
+  $('#shopCount').textContent = shop.length ? `${done}/${shop.length}` : '';
+  $('#shopList').innerHTML = shop.length ? shop.map(s => `
+    <div class="si ${s.done?'done':''}">
+      <label><input type="checkbox" data-id="${s.id}" ${s.done?'checked':''}><span class="nm">${esc(s.name)}</span></label>
+      ${s.place?`<a class="mini" target="_blank" rel="noopener" href="${esc(placeHref(s.place))}" title="${esc(/^https?:/i.test(s.place)?'구글맵':s.place)}">📍</a>`:''}
+      <button class="mini" data-del="${s.id}" type="button" aria-label="삭제">✕</button>
+    </div>`).join('') : '<div class="empty">아직 담은 물건이 없어요</div>';
+}
+function addShop(){
+  const name = $('#shopName').value.trim(); if(!name){ $('#shopName').focus(); return; }
+  shop.unshift({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,5), name, place: $('#shopPlace').value.trim(), done:false });
+  $('#shopName').value = ''; $('#shopPlace').value = ''; saveShop(); renderShop(); $('#shopName').focus();
+}
+$('#shopAdd').onclick = addShop;
+$('#shopName').addEventListener('keydown', e => { if(e.key==='Enter') addShop(); });
+$('#shopPlace').addEventListener('keydown', e => { if(e.key==='Enter') addShop(); });
+$('#shopFind').onclick = () => {
+  const q = $('#shopPlace').value.trim() || $('#shopName').value.trim();
+  if(!q){ toast('찾을 장소나 물건 이름을 입력하세요'); return; }
+  window.open(mapsSearch(q + ' Osaka'), '_blank', 'noopener');
+  toast('구글맵에서 공유 → 링크 복사 후 붙여넣기');
+};
+$('#shopList').addEventListener('click', e => {
+  const del = e.target.closest('[data-del]');
+  if(del){ shop = shop.filter(s => s.id !== del.dataset.del); saveShop(); renderShop(); }
+});
+$('#shopList').addEventListener('change', e => {
+  const cb = e.target.closest('input[data-id]'); if(!cb) return;
+  const s = shop.find(x => x.id === cb.dataset.id); if(s){ s.done = cb.checked; saveShop(); renderShop(); }
+});
+$('#shopClear').onclick = () => { if(shop.some(s=>s.done) && confirm('완료한 항목을 지울까요?')){ shop = shop.filter(s => !s.done); saveShop(); renderShop(); } };
+$('#shopExport').onclick = async () => {
+  const code = 'OSAKA-SHOP:' + btoa(unescape(encodeURIComponent(JSON.stringify(shop))));
+  try{ await navigator.clipboard.writeText(code); toast('복사했어요. 카톡 등으로 보내세요'); }
+  catch(e){ prompt('이 코드를 복사하세요', code); }
+};
+$('#shopImport').onclick = () => {
+  const code = prompt('받은 코드를 붙여넣으세요'); if(!code) return;
+  try{
+    const data = JSON.parse(decodeURIComponent(escape(atob(code.trim().replace(/^OSAKA-SHOP:/,'')))));
+    const have = new Set(shop.map(s => s.id)); let n = 0;
+    data.forEach(s => { if(s && s.id && !have.has(s.id)){ shop.push({ id:s.id, name:String(s.name||''), place:String(s.place||''), done:!!s.done }); n++; } });
+    saveShop(); renderShop(); toast(n + '개 가져왔어요');
+  }catch(e){ toast('코드를 읽지 못했어요'); }
+};
+
+/* ===== 라피트 ===== */
+const t2m = s => { const [h,m] = s.split(':').map(Number); return h*60+m; };
+const m2t = m => String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60).padStart(2,'0');
+const dur = m => Math.floor(m/60) + '시간 ' + (m%60 ? (m%60)+'분' : '').trim();
+function renderRapit(){
+  const inbound = [
+    { dep:'14:00', tag:'빠르게', why:'수하물 없이 입국이 빠를 때' },
+    { dep:'14:30', tag:'추천', why:'착륙 후 약 90분 여유', best:true },
+    { dep:'15:00', tag:'여유', why:'수하물·입국 지연 대비' }
+  ];
+  $('#rIn').innerHTML = inbound.map(r => {
+    const nb = t2m(r.dep) + 38, hotel = nb + 25;
+    return `<div class="rec ${r.best?'best':''}"><div class="big">${r.dep}</div><div class="a">난바 도착 약 ${m2t(nb)}</div>
+      <div class="b">${r.why} · 호텔 약 ${m2t(hotel)}</div><div class="t">${r.tag}</div></div>`;
+  }).join('');
+  const out = [
+    { dep:'15:00', tag:'여유', why:'마지막 쇼핑·식사 시간 확보' },
+    { dep:'15:30', tag:'추천', why:'여유 있고 대기 부담 적음', best:true },
+    { dep:'16:00', tag:'마지노선', why:'체크인·보안검색 시간 빠듯' }
+  ];
+  const flight = t2m('18:55');
+  $('#rOut').innerHTML = out.map(r => {
+    const ap = t2m(r.dep) + 37;
+    return `<div class="rec ${r.best?'best':''}"><div class="big">${r.dep}</div><div class="a">공항역 도착 약 ${m2t(ap)}</div>
+      <div class="b">${r.why} · 비행 ${dur(flight-ap)} 전 (터미널 이동 약 10분 별도)</div><div class="t">${r.tag}</div></div>`;
+  }).join('');
+}
+
+/* ===== 환율 ===== */
+let rate100 = null; // 원 / 100엔
+const nf = n => isFinite(n) ? (Math.round(n*100)/100).toLocaleString('ko-KR') : '';
+const num = s => parseFloat(String(s).replace(/,/g,''));
+function fxNote(msg){ $('#fxNote').textContent = msg; }
+function calcFromJpy(){ const v = num($('#jpy').value); $('#krw').value = (rate100 && v>=0) ? Math.round(v*rate100/100) : ''; }
+function calcFromKrw(){ const v = num($('#krw').value); $('#jpy').value = (rate100 && v>=0) ? Math.round(v/rate100*100) : ''; }
+async function loadRate(force){
+  let cached = null; try{ cached = JSON.parse(localStorage.getItem('osaka-fx') || 'null'); }catch(e){}
+  const manual = localStorage.getItem('osaka-fx-manual');
+  if(manual && !force){ rate100 = +manual; $('#rate').value = rate100; fxNote(`직접 입력한 환율 · 100엔 = ${nf(rate100)}원`); return; }
+  try{
+    const r = await fetch('https://open.er-api.com/v6/latest/JPY'); const j = await r.json();
+    if(!j.rates || !j.rates.KRW) throw 0;
+    rate100 = j.rates.KRW * 100; localStorage.removeItem('osaka-fx-manual');
+    try{ localStorage.setItem('osaka-fx', JSON.stringify({ rate100, at: Date.now() })); }catch(e){}
+    fxNote(`100엔 = ${nf(rate100)}원 · 방금 업데이트 (은행 환율과 차이가 있을 수 있어요)`);
+  }catch(e){
+    if(cached){ rate100 = cached.rate100; fxNote(`오프라인 · ${new Date(cached.at).toLocaleDateString('ko-KR')} 환율 100엔 = ${nf(rate100)}원`); }
+    else { rate100 = null; fxNote('환율을 불러오지 못했어요. 아래 기준 환율에 직접 입력하세요.'); }
+  }
+  $('#rate').value = rate100 ? Math.round(rate100*100)/100 : '';
+  calcFromJpy();
+}
+$('#jpy').addEventListener('input', calcFromJpy);
+$('#krw').addEventListener('input', calcFromKrw);
+$('#rate').addEventListener('input', () => {
+  const v = num($('#rate').value); if(!(v > 0)) return;
+  rate100 = v; try{ localStorage.setItem('osaka-fx-manual', String(v)); }catch(e){}
+  fxNote(`직접 입력한 환율 · 100엔 = ${nf(v)}원`); calcFromJpy();
+});
+$('#rateAuto').onclick = () => { localStorage.removeItem('osaka-fx-manual'); fxNote('환율을 불러오는 중…'); loadRate(true); };
+$('#quick').innerHTML = [500,1000,3000,5000,10000].map(v => `<button class="btn" type="button" data-v="${v}">¥${v.toLocaleString()}</button>`).join('');
+$('#quick').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if(b){ $('#jpy').value = b.dataset.v; calcFromJpy(); } });
+
+/* ===== 시작 ===== */
+renderChips(); renderDay(); renderShop(); renderRapit();
+loadWeather(); loadRate();
+</script>
+</body>
+</html>
