@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#162033">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="오사카">
-<title>오사카 10.12–10.15</title>
+<meta name="apple-mobile-web-app-title" content="오사카 먹부림여행">
+<title>오사카 먹부림여행 10.12–10.15</title>
 <link rel="icon" type="image/png" href="./app-icon.png">
 <link rel="apple-touch-icon" href="./app-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,6 +31,7 @@ button,input,textarea{font:inherit;color:inherit}
 
 .top{position:sticky;top:0;z-index:20;background:var(--ink);color:#fff;
   padding:calc(10px + env(safe-area-inset-top,0px)) 16px 12px;display:flex;align-items:flex-end;justify-content:space-between}
+.top{gap:8px}.top>div:first-child{min-width:0}.dday{flex:none;white-space:nowrap}
 .top h1{margin:0;font-family:var(--sign);font-weight:400;font-size:28px;letter-spacing:.02em;line-height:1}
 .top .range{display:block;font-size:12px;opacity:.75;margin-top:4px}
 .dday{font-family:var(--sign);font-size:20px;background:var(--pink-line);color:#fff;border-radius:999px;padding:3px 14px 4px}
@@ -40,7 +41,7 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 
 /* tab bar */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--line);
-  display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding-bottom:env(safe-area-inset-bottom,0px)}
 .tabbar button{border:0;background:none;padding:9px 0 8px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
 .tabbar button span{font-size:21px;line-height:1}
 .tabbar button.on{color:var(--roof);font-weight:700}
@@ -117,6 +118,18 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 .steps{margin:6px 0 0;padding-left:18px;font-size:13.5px}
 .steps li{margin:2px 0}
 
+/* booking and travel phrases */
+.booking-links{display:grid;gap:10px;margin-top:10px}
+.booking-links a{border-radius:12px;min-height:48px;justify-content:center;text-align:center;padding:12px;font-weight:700}
+.phrase{padding:13px 0;border-bottom:1px solid var(--line)}
+.phrase:last-child{border-bottom:0;padding-bottom:0}
+.phrase .meaning{font-weight:700;font-size:15px;margin:0 0 5px}
+.phrase .japanese{font-size:15px;margin:0 0 5px;overflow-wrap:anywhere}
+.phrase .reading{font-size:16px;font-weight:700;color:var(--roof);margin:0;overflow-wrap:anywhere}
+.phrase.featured{background:var(--roof-soft);border:0;border-radius:12px;padding:12px;margin-top:8px}
+.phrase-jump{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+#tab-talk .panel{scroll-margin-top:95px}
+@media(max-width:380px){.top{padding-left:12px;padding-right:12px}.top h1{font-size:22px}.top .range{font-size:10px}.dday{font-size:17px;padding:3px 10px}}
 /* nearby and notes */
 .nearby h2{font-size:16px}
 .nearby .loc-status{font-size:12px;color:var(--muted);margin:8px 0 0}
@@ -161,7 +174,7 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 <body>
 
 <header class="top">
-  <div><h1>오사카</h1><span class="range">10.12 월 – 10.15 목 · Hotel Resol Trinity</span></div>
+  <div><h1>오사카 먹부림여행</h1><span class="range">10.12 월 – 10.15 목 · Hotel Resol Trinity</span></div>
   <div class="dday" id="dday"></div>
 </header>
 
@@ -214,6 +227,13 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
   <!-- 라피트 -->
   <section class="tab" id="tab-rapit">
     <div class="panel">
+      <h2>라피트 예약하기</h2>
+      <div class="booking-links">
+        <a class="btn pri" target="_blank" rel="noopener noreferrer" href="https://t3.linktivity.io/issueticket/nankai/2Hm0qM_xrmvOulEt/HANA_JAPAN-20261008-EUG2?lang=KO">간사이공항 → 난바 예약하기</a>
+        <a class="btn pri" target="_blank" rel="noopener noreferrer" href="https://t3.linktivity.io/issueticket/nankai/fRkU3uwn90D4LIvh/HANA_JAPAN-20261008-PYTG?lang=KO">난바 → 간사이공항 예약하기</a>
+      </div>
+    </div>
+    <div class="panel">
       <h2>10/12 간사이공항 → 난바</h2>
       <p class="note">아래 시간은 이동 계획용 추천 시간대예요. 실제 출발편은 공식 시간표에서 확인하세요.</p>
       <p class="note">BX126 11:30 출발, 간사이 도착 약 13:00 가정 (입국·수하물 약 75~80분)</p>
@@ -256,6 +276,45 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
       </div>
     </div>
   </section>
+  <!-- 회화 -->
+  <section class="tab" id="tab-talk">
+    <div class="panel"><h2>간단한 일본어 회화</h2><p class="note">한글 발음을 보고 천천히 말하거나, 일본어 문장을 상대방에게 보여주세요.</p></div>
+    <div class="phrase-jump"><a class="btn" href="#talk-hotel">호텔</a><a class="btn" href="#talk-store">상점</a><a class="btn" href="#talk-restaurant">식당</a></div>
+    <div class="panel" id="talk-hotel"><h2>호텔</h2>
+<div class="phrase"><p class="meaning">체크인 부탁드립니다.</p><p class="japanese" lang="ja">チェックインをお願いします。</p><p class="reading">체크인오 오네가이시마스.</p></div>
+<div class="phrase"><p class="meaning">예약했어요.</p><p class="japanese" lang="ja">予約しています。</p><p class="reading">요야쿠 시테이마스.</p></div>
+<div class="phrase"><p class="meaning">짐 맡길 수 있나요?</p><p class="japanese" lang="ja">荷物を預けてもいいですか？</p><p class="reading">니모츠오 아즈케테모 이이데스카?</p></div>
+<div class="phrase"><p class="meaning">체크아웃 후에도 짐 맡길 수 있나요?</p><p class="japanese" lang="ja">チェックアウト後も荷物を預けられますか？</p><p class="reading">체크아우토 고모 니모츠오 아즈케라레마스카?</p></div>
+<div class="phrase"><p class="meaning">조식은 몇 시까지인가요?</p><p class="japanese" lang="ja">朝食は何時までですか？</p><p class="reading">초오쇼쿠와 난지마데 데스카?</p></div>
+<div class="phrase"><p class="meaning">대욕장은 어디인가요?</p><p class="japanese" lang="ja">大浴場はどこですか？</p><p class="reading">다이요쿠조오와 도코데스카?</p></div>
+<div class="phrase"><p class="meaning">수건 주세요.</p><p class="japanese" lang="ja">タオルをお願いします。</p><p class="reading">타오루오 오네가이시마스.</p></div>
+<div class="phrase"><p class="meaning">체크아웃 부탁드립니다.</p><p class="japanese" lang="ja">チェックアウトをお願いします。</p><p class="reading">체크아우토오 오네가이시마스.</p></div>
+    </div>
+    <div class="panel" id="talk-store"><h2>상점</h2>
+<div class="phrase"><p class="meaning">이거 얼마예요?</p><p class="japanese" lang="ja">これはいくらですか？</p><p class="reading">코레와 이쿠라데스카?</p></div>
+<div class="phrase"><p class="meaning">이걸로 주세요.</p><p class="japanese" lang="ja">これをください。</p><p class="reading">코레오 쿠다사이.</p></div>
+<div class="phrase"><p class="meaning">카드 되나요?</p><p class="japanese" lang="ja">カードは使えますか？</p><p class="reading">카아도와 츠카에마스카?</p></div>
+<div class="phrase"><p class="meaning">면세 되나요?</p><p class="japanese" lang="ja">免税できますか？</p><p class="reading">멘제이 데키마스카?</p></div>
+<div class="phrase"><p class="meaning">입어 봐도 되나요?</p><p class="japanese" lang="ja">試着してもいいですか？</p><p class="reading">시차쿠 시테모 이이데스카?</p></div>
+<div class="phrase"><p class="meaning">다른 사이즈 있나요?</p><p class="japanese" lang="ja">他のサイズはありますか？</p><p class="reading">호카노 사이즈와 아리마스카?</p></div>
+<div class="phrase"><p class="meaning">봉투 주세요.</p><p class="japanese" lang="ja">袋をください。</p><p class="reading">후쿠로오 쿠다사이.</p></div>
+<div class="phrase"><p class="meaning">봉투는 필요 없어요.</p><p class="japanese" lang="ja">袋は要りません。</p><p class="reading">후쿠로와 이리마센.</p></div>
+    </div>
+    <div class="panel" id="talk-restaurant"><h2>식당</h2>
+<div class="phrase"><p class="meaning">두 명이에요.</p><p class="japanese" lang="ja">二人です。</p><p class="reading">후타리데스.</p></div>
+<div class="phrase"><p class="meaning">예약했어요.</p><p class="japanese" lang="ja">予約しています。</p><p class="reading">요야쿠 시테이마스.</p></div>
+<div class="phrase featured"><p class="meaning">와사비는 빼고, 따로 주실 수 있나요?</p><p class="japanese" lang="ja">わさびは入れずに、別でいただけますか？</p><p class="reading">와사비와 이레즈니, 베츠데 이타다케마스카?</p></div>
+<div class="phrase"><p class="meaning">이거 하나 주세요.</p><p class="japanese" lang="ja">これを一つください。</p><p class="reading">코레오 히토츠 쿠다사이.</p></div>
+<div class="phrase"><p class="meaning">이거 두 개 주세요.</p><p class="japanese" lang="ja">これを二つください。</p><p class="reading">코레오 후타츠 쿠다사이.</p></div>
+<div class="phrase"><p class="meaning">추천은 뭐예요?</p><p class="japanese" lang="ja">おすすめは何ですか？</p><p class="reading">오스스메와 난데스카?</p></div>
+<div class="phrase"><p class="meaning">물 주세요.</p><p class="japanese" lang="ja">お水をください。</p><p class="reading">오미즈오 쿠다사이.</p></div>
+<div class="phrase"><p class="meaning">생맥주 두 잔 주세요.</p><p class="japanese" lang="ja">生ビールを二つください。</p><p class="reading">나마비이루오 후타츠 쿠다사이.</p></div>
+<div class="phrase"><p class="meaning">계산해 주세요.</p><p class="japanese" lang="ja">お会計お願いします。</p><p class="reading">오카이케이 오네가이시마스.</p></div>
+<div class="phrase"><p class="meaning">카드로 결제할게요.</p><p class="japanese" lang="ja">カードでお願いします。</p><p class="reading">카아도데 오네가이시마스.</p></div>
+<div class="phrase"><p class="meaning">포장해 주세요.</p><p class="japanese" lang="ja">持ち帰りでお願いします。</p><p class="reading">모치카에리데 오네가이시마스.</p></div>
+<div class="phrase"><p class="meaning">잘 먹었습니다.</p><p class="japanese" lang="ja">ごちそうさまでした。</p><p class="reading">고치소오사마데시타.</p></div>
+    </div>
+  </section>
 </main>
 
 <nav class="tabbar" aria-label="메뉴">
@@ -263,6 +322,7 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
   <button data-tab="shop" type="button"><span>🛍️</span>쇼핑</button>
   <button data-tab="rapit" type="button"><span>🚄</span>라피트</button>
   <button data-tab="fx" type="button"><span>💴</span>환율</button>
+  <button data-tab="talk" type="button"><span>💬</span>회화</button>
 </nav>
 
 <input type="file" id="fileIn" accept="image/*" multiple hidden>
