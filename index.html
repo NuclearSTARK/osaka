@@ -66,6 +66,8 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 .bd{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:11px 13px}
 .hd{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
 .hd h3{margin:0;font-size:16px;line-height:1.35}
+.title-group{flex:1;min-width:0;overflow-wrap:anywhere}
+.title-group .tag{display:inline-block;margin-top:5px}
 .tag{flex:none;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
 .sub{margin:3px 0 0;color:var(--muted);font-size:13.5px}
 .go{margin:6px 0 0;font-size:13px;background:var(--paper);border-radius:8px;padding:5px 9px}
@@ -85,8 +87,25 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 .it.flight .sub{color:#b9c4d4}
 .it.flight .go{background:rgba(255,255,255,.12)}
 
-.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
-.thumbs img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--pink-line);cursor:pointer}
+.hotel-return{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.hotel-return>div{min-width:0;font-size:12px}
+.hotel-return small{display:block;font-size:11px;color:var(--muted)}
+.hotel-return .btn{flex:none;color:var(--roof);font-weight:700}
+.booking-summary{background:#fff;border:1.5px solid var(--pink-line);border-radius:14px;padding:12px;margin-bottom:14px}
+.booking-summary h2{font-size:15px;margin:0 0 8px}
+.booking-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+.booking-row .summary-jump{display:flex;gap:8px;align-items:flex-start;flex:1;min-width:0;border:0;background:none;padding:2px 0;text-align:left;cursor:pointer;font-size:13px;color:var(--ink)}
+.summary-jump b{flex:none;font-variant-numeric:tabular-nums;color:var(--pink-ink)}
+.summary-jump span{min-width:0;overflow-wrap:anywhere}
+.booking-row .btn{flex:none;padding:6px 9px;font-size:12px}
+.booking-row.is-done .summary-jump{opacity:.6}
+.booking-row.is-done .summary-jump span{text-decoration:line-through}
+.order-memo{margin-top:8px;border-left:3px solid var(--roof);border-radius:8px;background:var(--roof-soft);padding:8px 10px;color:#204b42;font-size:13px;overflow-wrap:anywhere}
+.order-memo[hidden]{display:none}
+.order-memo p{margin:4px 0 0;white-space:pre-wrap}
+.order-memo strong{display:block;font-size:12px}
+.it{scroll-margin-top:110px}
+.pay{border:1px solid #a8c8bf;padding:6px 9px!important;font-size:13px!important}
 
 /* panels */
 .panel{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
@@ -120,7 +139,9 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 
 .it.completed .tm,.it.completed h3,.it.completed .sub,.it.completed .go{opacity:.55}
 .it.completed h3{text-decoration:line-through}
-.complete-row{display:flex;justify-content:flex-end;margin-top:10px}
+.complete-btn{flex:none;white-space:nowrap;min-height:36px;padding:6px 9px;font-size:12px;color:var(--ink)}
+.it.flight .btn{background:#fff;color:var(--ink);border-color:#bcc8da}
+.it.flight .complete-btn[aria-pressed="true"]{background:var(--roof-soft);color:var(--roof);border-color:var(--roof)}
 .complete-btn[aria-pressed="true"]{background:var(--roof-soft);border-color:var(--roof);color:var(--roof)}
 .wxcard{flex-wrap:wrap}
 .wxcard .wx-body{flex:1;min-width:140px}
@@ -158,7 +179,7 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 .it.flight .item-note{border-color:#68758a}
 .it.flight .note-status{color:#ced8e5}
 .it.flight textarea{color:var(--ink)}
-@media(max-width:380px){main{padding:10px}.it{grid-template-columns:44px minmax(0,1fr);gap:6px}.tm{font-size:17px}.bd{padding:10px}.hd{flex-wrap:wrap}.rec .big{font-size:28px}.rec .a{font-size:13px}}
+@media(max-width:380px){main{padding:10px}.it{grid-template-columns:44px minmax(0,1fr);gap:6px}.tm{font-size:17px}.bd{padding:10px}.hd{gap:6px}.rec .big{font-size:28px}.rec .a{font-size:13px}}
 /* fx */
 .fxbox{display:grid;grid-template-columns:1fr;gap:10px}
 .fxl{display:flex;align-items:center;gap:10px}
@@ -170,7 +191,6 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 #viewer{position:fixed;inset:0;background:rgba(10,14,22,.94);z-index:60;display:none;flex-direction:column;
   padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
 #viewer.on{display:flex}
-#vdel[hidden]{display:none}
 #viewer img{flex:1;min-height:0;object-fit:contain;width:100%}
 #viewer .vb{display:flex;gap:10px;justify-content:center;padding:12px}
 .toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;
@@ -187,10 +207,15 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 </header>
 
 <main>
+  <div class="hotel-return">
+    <div><b>Hotel Resol Trinity Osaka</b><small>현재 위치에서 숙소로</small></div>
+    <a class="btn" id="hotelReturn" target="_blank" rel="noopener">🏨 호텔 돌아가기</a>
+  </div>
   <!-- 일정 -->
   <section class="tab on" id="tab-plan">
     <div class="chips" id="chips"></div>
     <div class="wxcard" id="wxcard"><div class="ico">⏳</div><div><b>날씨 불러오는 중…</b><small>오사카 10/12–10/15 예보</small></div></div>
+    <div class="booking-summary" id="bookingSummary"></div>
     <div id="list"></div>
   </section>
 
@@ -333,11 +358,9 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
   <button data-tab="talk" type="button"><span>💬</span>회화</button>
 </nav>
 
-<input type="file" id="fileIn" accept="image/*" multiple hidden>
 <div id="viewer" role="dialog" aria-label="예약 사진">
   <img id="vimg" alt="예약 사진">
   <div class="vb">
-    <button class="btn" id="vdel" type="button">삭제</button>
     <button class="btn pri" id="vclose" type="button">닫기</button>
   </div>
 </div>
@@ -367,9 +390,8 @@ const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const mapsSearch = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
-const dirUrl = dest => 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(HOTEL) +
-  '&destination=' + encodeURIComponent(dest) + '&travelmode=transit';
 const currentDirUrl = dest => 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(dest) + '&travelmode=transit';
+$('#hotelReturn').href = currentDirUrl(HOTEL + ' Osaka Japan');
 const toast = (m) => { const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toast.h); toast.h=setTimeout(()=>t.classList.remove('on'),2200); };
 
 const DAYS = [
@@ -446,10 +468,11 @@ function updateNoteStatuses(){
 function updateCompleted(){
   $$('[data-complete]').forEach(button=>{
     const done=completed.has(button.dataset.complete);
-    button.textContent=done?'✓ 일정 완료':'일정 완료 체크';
+    button.textContent=done?'✓ 일정완료':'일정완료';
     button.setAttribute('aria-pressed',String(done));
     button.closest('.it').classList.toggle('completed',done);
   });
+  renderReservationSummary();
 }
 function startSharedNotes(){
   onSnapshot(notesCol, snap=>{
@@ -457,7 +480,7 @@ function startSharedNotes(){
     updateCompleted();
     notesReady=true; notesError='';
     $$('[data-note]').forEach(el=>{if(!drafts.has(el.dataset.note)&&document.activeElement!==el)el.value=notes.get(el.dataset.note)||'';});
-    updateNoteStatuses();
+    updateNoteStatuses();updateOrderMemos();
   }, e=>{notesReady=false;notesError=e.code||'firebase';updateNoteStatuses();});
 }
 const KIND_LABEL = { res:'예약완료', walk:'워크인', free:'', flight:'' };
@@ -558,6 +581,36 @@ const RESERVATION_PHOTO_END = Date.parse('2026-10-15T20:00:00+09:00');
 function reservationPhotosVisible(now = Date.now()){
   return now < RESERVATION_PHOTO_END;
 }
+const ORDER_TIPS = {
+  d1f:'좌석만 예약 · 음식은 현장에서 주문',
+  d2d:'와사비 빼고 따로 요청',
+  d3c:'Kiwami 코스 2명 · 총 ¥26,400 · 결혼 12주년\n와사비 빼고 따로 요청',
+  d4d:'코스 1인 ¥6,600\n와사비 빼고 따로 요청'
+};
+function orderMemoHTML(id){
+  const text = drafts.has(id)?drafts.get(id):notes.get(id)||'';
+  const tip = ORDER_TIPS[id] || '';
+  return `${tip?`<strong>주문 · 예약 메모</strong><p>${esc(tip)}</p>`:''}${text.trim()?`<strong>${drafts.has(id)?'작성 중인 메모':'저장된 메모'}</strong><p>${esc(text)}</p>`:''}`;
+}
+function updateOrderMemos(){
+  $$('[data-order-memo]').forEach(el=>{
+    const content=orderMemoHTML(el.dataset.orderMemo);el.innerHTML=content;el.hidden=!content;
+  });
+}
+function renderReservationSummary(){
+  const day=DAYS[sel], bookings=day.items.filter(it=>it.kind==='res');
+  $('#bookingSummary').innerHTML=`<h2>${esc(day.md)} 예약 요약 · ${bookings.length}건</h2>`+bookings.map(it=>`
+    <div class="booking-row ${completed.has(it.id)?'is-done':''}">
+      <button class="summary-jump" type="button" data-jump="${it.id}" aria-label="${esc(it.title)} 일정으로 이동"><b>${esc(it.t)}</b><span>${esc(it.title)}${completed.has(it.id)?' ✓':''}</span></button>
+      ${reservationPhotosVisible() && RESERVATION_PHOTOS[it.id]?`<button class="btn" type="button" data-reservation="${it.id}" data-reservation-photo>예약 사진</button>`:''}
+    </div>`).join('');
+}
+$('#bookingSummary').addEventListener('click',e=>{
+  const photo=e.target.closest('[data-reservation]');
+  if(photo){openReservationViewer(photo.dataset.reservation);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump)document.getElementById(jump.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'});
+});
 function itemHTML(it){
   const mapHref = it.url || (it.ll ? mapsSearch(it.ll.join(',')) : mapsSearch(it.q || it.title));
   const dest = it.ll ? it.ll.join(',') : it.q || null;
@@ -567,19 +620,18 @@ function itemHTML(it){
   return `<article class="it ${it.kind} ${completed.has(it.id)?'completed':''}" id="${it.id}">
     <div class="tm ${isTime?'':'txt'}">${esc(it.t)}</div>
     <div class="bd">
-      <div class="hd"><h3>${esc(it.title)}</h3>${label?`<span class="tag">${label}</span>`:''}</div>
+      <div class="hd"><div class="title-group"><h3>${esc(it.title)}</h3>${label?`<span class="tag">${label}</span>`:''}</div><button class="btn complete-btn" type="button" data-complete="${it.id}" aria-pressed="${completed.has(it.id)}">${completed.has(it.id)?'✓ 일정완료':'일정완료'}</button></div>
       ${it.sub?`<p class="sub">${esc(it.sub)}</p>`:''}
       ${it.go?`<p class="go">${esc(it.go)}</p>`:''}
       ${CARD_SOURCES[it.id]?`<a class="pay" href="${CARD_SOURCES[it.id]}" target="_blank" rel="noopener" title="결제수단 안내 확인">💳 카드 가능</a>`:''}
       ${show?`<div class="acts">
         <a class="btn" target="_blank" rel="noopener" href="${esc(mapHref)}">📍 구글맵</a>
-        ${dest?`<a class="btn" target="_blank" rel="noopener" href="${esc(dirUrl(dest))}">🧭 호텔에서 길찾기</a><a class="btn" target="_blank" rel="noopener" href="${esc(currentDirUrl(dest))}">📍 현재 위치에서 길찾기</a>`:''}
+        ${dest?`<a class="btn" target="_blank" rel="noopener" href="${esc(currentDirUrl(dest))}">📍 현재 위치에서 길찾기</a>`:''}
         ${it.kind==='res' && reservationPhotosVisible()?`
         ${RESERVATION_PHOTOS[it.id]?`<button class="btn pri" type="button" data-reservation="${it.id}" data-reservation-photo>📄 예약 확인 사진</button>`:''}
-        <button class="btn" type="button" data-add="${it.id}" data-reservation-photo>📷 사진 추가</button>`:''}
+`:''}
       </div>`:''}
-      ${it.kind==='res' && reservationPhotosVisible()?`<div class="thumbs" data-thumbs="${it.id}" data-reservation-photo></div>`:''}
-      <div class="complete-row"><button class="btn complete-btn" type="button" data-complete="${it.id}" aria-pressed="${completed.has(it.id)}">${completed.has(it.id)?'✓ 일정 완료':'일정 완료 체크'}</button></div>
+      <div class="order-memo" data-order-memo="${it.id}" ${orderMemoHTML(it.id)?'':'hidden'}>${orderMemoHTML(it.id)}</div>
       <div class="item-note">
         <label for="note-${it.id}">📝 메모</label>
         <textarea id="note-${it.id}" data-note="${it.id}" maxlength="2000" placeholder="주문할 메뉴, 준비물 등…">${esc(drafts.has(it.id)?drafts.get(it.id):notes.get(it.id)||'')}</textarea>
@@ -590,7 +642,7 @@ function itemHTML(it){
 }
 function renderDay(){
   $('#list').innerHTML = DAYS[sel].items.map(itemHTML).join('');
-  renderWxCard(); loadThumbs();
+  renderWxCard(); renderReservationSummary();
 }
 $('#chips').addEventListener('click', e => {
   const b = e.target.closest('.chip'); if(!b) return;
@@ -615,7 +667,7 @@ $('#locateStores').addEventListener('click',()=>{
 /* ===== 일정 공동 메모 ===== */
 $('#list').addEventListener('input',e=>{
   const el=e.target.closest('[data-note]');if(!el)return;
-  drafts.set(el.dataset.note,el.value);noteStates.delete(el.dataset.note);keepDrafts();updateNoteStatuses();
+  drafts.set(el.dataset.note,el.value);noteStates.delete(el.dataset.note);keepDrafts();updateNoteStatuses();updateOrderMemos();
 });
 $('#list').addEventListener('click',async e=>{
   const button=e.target.closest('[data-save-note]');if(!button)return;
@@ -629,10 +681,10 @@ $('#list').addEventListener('click',async e=>{
     if(drafts.get(id)===text){drafts.delete(id);keepDrafts();noteStates.set(id,'✓ 공동 메모 저장 완료');}
     else{noteStates.delete(id);}
   }catch(e){noteStates.set(id,'저장 실패: '+(e.code||'network'));}
-  finally{button.disabled=false;updateNoteStatuses();}
+  finally{button.disabled=false;updateNoteStatuses();updateOrderMemos();}
 });
 
-/* ===== 공동 일정 완료 체크 ===== */
+/* ===== 공동 일정완료 ===== */
 $('#list').addEventListener('click',async e=>{
   const button=e.target.closest('[data-complete]');if(!button)return;
   if(!notesReady){toast('공동 일정 연결을 기다려 주세요');return;}
@@ -646,91 +698,31 @@ $('#list').addEventListener('click',async e=>{
   finally{button.disabled=false;}
 });
 
-/* ===== 예약 사진 (IndexedDB, 이 기기에만 저장) ===== */
-const dbp = new Promise((res, rej) => {
-  if(!window.indexedDB){ rej(); return; }
-  const r = indexedDB.open('osaka-trip', 1);
-  r.onupgradeneeded = () => r.result.createObjectStore('photos');
-  r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
-});
-const idb = (mode, fn) => dbp.then(db => new Promise((res, rej) => {
-  const tx = db.transaction('photos', mode); const rq = fn(tx.objectStore('photos'));
-  tx.oncomplete = () => res(rq && rq.result); tx.onerror = () => rej(tx.error);
-}));
-const getPics = id => idb('readonly', s => s.get(id)).then(v => v || []).catch(() => []);
-const setPics = (id, arr) => idb('readwrite', s => arr.length ? s.put(arr, id) : s.delete(id));
-async function shrink(file){
-  try{
-    const bmp = await createImageBitmap(file); const sc = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
-    const c = document.createElement('canvas'); c.width = Math.round(bmp.width*sc); c.height = Math.round(bmp.height*sc);
-    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
-    return await new Promise(r => c.toBlob(b => r(b || file), 'image/jpeg', .85));
-  }catch(e){ return file; }
-}
-const urls = {};
-async function loadThumbs(){
-  for(const box of $$('[data-thumbs]')){
-    const id = box.dataset.thumbs; const pics = await getPics(id);
-    (urls[id] || []).forEach(URL.revokeObjectURL);
-    urls[id] = pics.map(b => URL.createObjectURL(b));
-    if(!reservationPhotosVisible()) { box.remove(); continue; }
-    box.innerHTML = urls[id].map((u,i) => `<img src="${u}" alt="예약 사진 ${i+1}" data-id="${id}" data-i="${i}">`).join('');
-  }
-}
-let addFor = null;
-$('#list').addEventListener('click', e => {
-  if(!reservationPhotosVisible()) return;
-  const reservation = e.target.closest('[data-reservation]');
-  if(reservation){ openReservationViewer(reservation.dataset.reservation); return; }
-  const add = e.target.closest('[data-add]');
-  if(add){ addFor = add.dataset.add; $('#fileIn').click(); return; }
-  const img = e.target.closest('.thumbs img');
-  if(img) openViewer(img.dataset.id, +img.dataset.i);
-});
-$('#fileIn').addEventListener('change', async e => {
-  const files = [...e.target.files]; e.target.value = '';
-  if(!files.length || !addFor || !reservationPhotosVisible()) return;
-  try{
-    const pics = await getPics(addFor);
-    for(const f of files) pics.push(await shrink(f));
-    await setPics(addFor, pics); await loadThumbs(); toast('사진을 추가했어요');
-  }catch(err){ toast('사진을 저장하지 못했어요'); }
-});
+/* ===== GitHub에 올린 예약 확인 사진 ===== */
 let vState = null;
 function openReservationViewer(id){
   if(!reservationPhotosVisible() || !RESERVATION_PHOTOS[id]) return;
-  vState = { id, shared:true };
-  $('#vdel').hidden = true;
+  vState = { id };
   $('#vimg').src = RESERVATION_PHOTOS[id];
   $('#viewer').classList.add('on');
 }
-function openViewer(id, i){
-  if(!reservationPhotosVisible()) return;
-  vState = { id, i }; $('#vdel').hidden = false;
-  $('#vimg').src = urls[id][i]; $('#viewer').classList.add('on');
-}
+$('#list').addEventListener('click',e=>{
+  const photo=e.target.closest('[data-reservation]');
+  if(photo)openReservationViewer(photo.dataset.reservation);
+});
 $('#vclose').onclick = () => {
   $('#viewer').classList.remove('on'); $('#vimg').removeAttribute('src'); vState = null;
 };
 $('#vimg').onclick = $('#vclose').onclick;
 $('#vimg').onerror = () => {
-  $('#vclose').onclick(); toast('예약 사진 파일을 찾지 못했어요. GitHub에 사진 7개도 함께 올려주세요.');
+  $('#vclose').onclick(); toast('예약 사진을 불러오지 못했어요. 잠시 후 다시 눌러주세요.');
 };
-$('#vdel').onclick = async () => {
-  if(!vState || vState.shared || !confirm('이 사진을 삭제할까요?')) return;
-  const pics = await getPics(vState.id); pics.splice(vState.i, 1);
-  await setPics(vState.id, pics); $('#vclose').onclick(); loadThumbs();
-};
+document.addEventListener('keydown',e=>{if(e.key==='Escape' && vState)$('#vclose').onclick();});
 function expireReservationPhotos(){
   if(reservationPhotosVisible()) return;
   $$('[data-reservation-photo]').forEach(el => el.remove());
   if(vState) $('#vclose').onclick();
-  Object.keys(urls).forEach(id => {
-    urls[id].forEach(URL.revokeObjectURL); urls[id] = [];
-  });
-  addFor = null;
 }
-// 열린 화면도 종료 시간에 숨기고, 휴대폰에서 다시 돌아올 때 재확인.
 if(reservationPhotosVisible()) setTimeout(expireReservationPhotos, RESERVATION_PHOTO_END - Date.now());
 document.addEventListener('visibilitychange', expireReservationPhotos);
 window.addEventListener('focus', expireReservationPhotos);
