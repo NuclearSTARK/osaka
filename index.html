@@ -170,6 +170,7 @@ main{max-width:560px;margin:0 auto;padding:12px 14px}
 #viewer{position:fixed;inset:0;background:rgba(10,14,22,.94);z-index:60;display:none;flex-direction:column;
   padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
 #viewer.on{display:flex}
+#vdel[hidden]{display:none}
 #viewer img{flex:1;min-height:0;object-fit:contain;width:100%}
 #viewer .vb{display:flex;gap:10px;justify-content:center;padding:12px}
 .toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;
@@ -546,6 +547,17 @@ function renderWxCard(){
   el.innerHTML=`<div class="ico">${ico}</div><div class="wx-body"><b>${txt}</b> · ${Math.round(w.min)}° / ${Math.round(w.max)}°<small>강수확률 ${w.pop??'–'}% · ${esc(wxUpdatedAt||'예보')} 조회${wxError?' (저장된 예보)':''}</small></div>${refresh}`;
 }
 $('#wxcard').addEventListener('click',e=>{if(e.target.closest('[data-wx-refresh]'))loadWeather();});
+/* 예약 확인 사진: 한국·일본 시간 2026-10-15 20:00부터 앱에서 숨김 */
+const RESERVATION_PHOTOS = Object.freeze({
+  d1f:'./reservation-d1f.jpg', d2d:'./reservation-d2d.jpg',
+  d2g:'./reservation-d2g.jpg', d3a:'./reservation-d3a.jpg',
+  d3c:'./reservation-d3c.jpg', d3f:'./reservation-d3f.jpg',
+  d4d:'./reservation-d4d.jpg'
+});
+const RESERVATION_PHOTO_END = Date.parse('2026-10-15T20:00:00+09:00');
+function reservationPhotosVisible(now = Date.now()){
+  return now < RESERVATION_PHOTO_END;
+}
 function itemHTML(it){
   const mapHref = it.url || (it.ll ? mapsSearch(it.ll.join(',')) : mapsSearch(it.q || it.title));
   const dest = it.ll ? it.ll.join(',') : it.q || null;
@@ -562,9 +574,11 @@ function itemHTML(it){
       ${show?`<div class="acts">
         <a class="btn" target="_blank" rel="noopener" href="${esc(mapHref)}">📍 구글맵</a>
         ${dest?`<a class="btn" target="_blank" rel="noopener" href="${esc(dirUrl(dest))}">🧭 호텔에서 길찾기</a><a class="btn" target="_blank" rel="noopener" href="${esc(currentDirUrl(dest))}">📍 현재 위치에서 길찾기</a>`:''}
-        ${it.kind==='res'?`<button class="btn" type="button" data-add="${it.id}">📷 예약 사진</button>`:''}
+        ${it.kind==='res' && reservationPhotosVisible()?`
+        ${RESERVATION_PHOTOS[it.id]?`<button class="btn pri" type="button" data-reservation="${it.id}" data-reservation-photo>📄 예약 확인 사진</button>`:''}
+        <button class="btn" type="button" data-add="${it.id}" data-reservation-photo>📷 사진 추가</button>`:''}
       </div>`:''}
-      ${it.kind==='res'?`<div class="thumbs" data-thumbs="${it.id}"></div>`:''}
+      ${it.kind==='res' && reservationPhotosVisible()?`<div class="thumbs" data-thumbs="${it.id}" data-reservation-photo></div>`:''}
       <div class="complete-row"><button class="btn complete-btn" type="button" data-complete="${it.id}" aria-pressed="${completed.has(it.id)}">${completed.has(it.id)?'✓ 일정 완료':'일정 완료 체크'}</button></div>
       <div class="item-note">
         <label for="note-${it.id}">📝 메모</label>
@@ -659,11 +673,15 @@ async function loadThumbs(){
     const id = box.dataset.thumbs; const pics = await getPics(id);
     (urls[id] || []).forEach(URL.revokeObjectURL);
     urls[id] = pics.map(b => URL.createObjectURL(b));
+    if(!reservationPhotosVisible()) { box.remove(); continue; }
     box.innerHTML = urls[id].map((u,i) => `<img src="${u}" alt="예약 사진 ${i+1}" data-id="${id}" data-i="${i}">`).join('');
   }
 }
 let addFor = null;
 $('#list').addEventListener('click', e => {
+  if(!reservationPhotosVisible()) return;
+  const reservation = e.target.closest('[data-reservation]');
+  if(reservation){ openReservationViewer(reservation.dataset.reservation); return; }
   const add = e.target.closest('[data-add]');
   if(add){ addFor = add.dataset.add; $('#fileIn').click(); return; }
   const img = e.target.closest('.thumbs img');
@@ -671,7 +689,7 @@ $('#list').addEventListener('click', e => {
 });
 $('#fileIn').addEventListener('change', async e => {
   const files = [...e.target.files]; e.target.value = '';
-  if(!files.length || !addFor) return;
+  if(!files.length || !addFor || !reservationPhotosVisible()) return;
   try{
     const pics = await getPics(addFor);
     for(const f of files) pics.push(await shrink(f));
@@ -679,16 +697,43 @@ $('#fileIn').addEventListener('change', async e => {
   }catch(err){ toast('사진을 저장하지 못했어요'); }
 });
 let vState = null;
-function openViewer(id, i){
-  vState = { id, i }; $('#vimg').src = urls[id][i]; $('#viewer').classList.add('on');
+function openReservationViewer(id){
+  if(!reservationPhotosVisible() || !RESERVATION_PHOTOS[id]) return;
+  vState = { id, shared:true };
+  $('#vdel').hidden = true;
+  $('#vimg').src = RESERVATION_PHOTOS[id];
+  $('#viewer').classList.add('on');
 }
-$('#vclose').onclick = () => { $('#viewer').classList.remove('on'); vState = null; };
+function openViewer(id, i){
+  if(!reservationPhotosVisible()) return;
+  vState = { id, i }; $('#vdel').hidden = false;
+  $('#vimg').src = urls[id][i]; $('#viewer').classList.add('on');
+}
+$('#vclose').onclick = () => {
+  $('#viewer').classList.remove('on'); $('#vimg').removeAttribute('src'); vState = null;
+};
 $('#vimg').onclick = $('#vclose').onclick;
+$('#vimg').onerror = () => {
+  $('#vclose').onclick(); toast('예약 사진 파일을 찾지 못했어요. GitHub에 사진 7개도 함께 올려주세요.');
+};
 $('#vdel').onclick = async () => {
-  if(!vState || !confirm('이 사진을 삭제할까요?')) return;
+  if(!vState || vState.shared || !confirm('이 사진을 삭제할까요?')) return;
   const pics = await getPics(vState.id); pics.splice(vState.i, 1);
   await setPics(vState.id, pics); $('#vclose').onclick(); loadThumbs();
 };
+function expireReservationPhotos(){
+  if(reservationPhotosVisible()) return;
+  $$('[data-reservation-photo]').forEach(el => el.remove());
+  if(vState) $('#vclose').onclick();
+  Object.keys(urls).forEach(id => {
+    urls[id].forEach(URL.revokeObjectURL); urls[id] = [];
+  });
+  addFor = null;
+}
+// 열린 화면도 종료 시간에 숨기고, 휴대폰에서 다시 돌아올 때 재확인.
+if(reservationPhotosVisible()) setTimeout(expireReservationPhotos, RESERVATION_PHOTO_END - Date.now());
+document.addEventListener('visibilitychange', expireReservationPhotos);
+window.addEventListener('focus', expireReservationPhotos);
 
 /* ===== 공동 쇼핑리스트 (Firebase 실시간 연동) ===== */
 let shop = [];
